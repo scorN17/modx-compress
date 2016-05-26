@@ -30,7 +30,7 @@ if( true || isset( $_GET[ 'test' ] ) )
 		$base_and_canonical .= '<link rel="canonical" href="'. $canonical .'" />';
 	}
 	
-	$html= str_replace( "<base_and_canonical>", $base_and_canonical, $html );
+	$html= str_replace( "<base_and_canonical />", $base_and_canonical, $html );
 	
 	/*
 	//preg_match_all( "/<link (.*)rel=\"canonical\"(.*)href=(\"(.*)\"|'(.*)')(.*)>/imU", $html, $ss );

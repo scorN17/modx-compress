@@ -1,0 +1,3 @@
+События:
+OnWebPageInit
+OnWebPagePrerender

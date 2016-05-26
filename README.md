@@ -1,0 +1,1 @@
+# modx-compress

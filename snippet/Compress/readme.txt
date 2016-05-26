@@ -13,3 +13,6 @@
 <noscript><link rel="stylesheet" type="text/css" href="[!Compress? &file=`template/css/noscript.css`!]" /></noscript>
 
 <script type="text/javascript" src="[!Compress? &files=`template/js/: dopscript.js, superslider.js, catalogfilter.js, shop.js, javascript.js` &tofile=`template/js/all.compress.js`!]"></script>
+
+
+[!!] - используйте именно этот вариант, иначе сжатый файл не будет пересоздаваться при измении оригиналов.

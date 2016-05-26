@@ -1,3 +1,6 @@
+- Создаете плагин
+- Отмечаете событие "OnWebPagePrerender"
+
 Кропит (или добавляет водяной знак) все картинки на странице с классом "highslidezoom".
 и обрамляет их в "<a class="highslide" onclick="return hs.expand(this)" href></a>"
 

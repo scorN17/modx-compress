@@ -1,0 +1,9 @@
+События:
+OnBeforeChunkFormDelete
+OnBeforeChunkFormSave
+OnBeforeDocFormSave
+OnBeforeDocFormDelete
+OnBeforeSnipFormDelete
+OnBeforeSnipFormSave
+OnBeforeTempFormDelete
+OnBeforeTempFormSave

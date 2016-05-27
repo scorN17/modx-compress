@@ -5,9 +5,10 @@
 	&file - компрессит в filename.compress.css один файл
 	&files - компрессит в all.compress.css все указанные файлы
 	&tofile - файл, в который комперссить все указанные файлы
+	&r=true - принудительно пересоздает компресс-файлы
 	[!Compress? &file=`css/styles.css`!]
 	[!Compress? &files=`css: styles.css, catalog.css; css2: shop.css; css3/dop.css` &tofile=`css/all.compress.css`!]
-*/
+*/$r=true;
 //============================================================================
 $strtr[ '.css' ]= array(
 	"\r"=>'', "\n"=>'', "\t"=>'',
@@ -24,6 +25,7 @@ $pregreplace[ '.css' ]= array(
 	"/[\s]*([\(\){\}\[\];:])[\s]*/" => '${1}',
 	"/[\s]*([,>])[\s]*/" => '${1}',
 	"/([^0-9])0px/" => '${1}0',
+	"/;}/" => '',
 );
 $pregreplace[ '.js' ]= array(
 	"/\/\/(.*)$/mU" => "",

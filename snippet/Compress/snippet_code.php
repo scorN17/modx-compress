@@ -8,7 +8,7 @@
 	&r=true - принудительно пересоздает компресс-файлы
 	[!Compress? &file=`css/styles.css`!]
 	[!Compress? &files=`css: styles.css, catalog.css; css2: shop.css; css3/dop.css` &tofile=`css/all.compress.css`!]
-*/$r=true;
+*/
 //============================================================================
 $strtr[ '.css' ]= array(
 	"\r"=>'', "\n"=>'', "\t"=>'',
@@ -76,10 +76,12 @@ if( true )
 $refresh= ( $refresh || ! empty( $r ) ? true : false );
 if( $refresh && $filesarray )
 {
+	$size_before= 0;
 	$file_to_handle= fopen( $root . $file_to, 'w' );
 	fwrite( $file_to_handle, "/*" );
 	foreach( $filesarray AS $filerow )
 	{
+		$size_before += filesize( $root . $filerow );
 		fwrite( $file_to_handle, "\t".$filerow."\n" );
 	}
 	fwrite( $file_to_handle, "*/\n\n" );
@@ -106,6 +108,8 @@ if( $refresh && $filesarray )
 			}
 		}
 	}
+	$size_after= filesize( $root . $file_to );
+	fwrite( $file_to_handle, "/* Compress ".round( $size_after * 100 / $size_before )."% */" );
 	fclose( $file_to_handle );
 }
 //============================================================================

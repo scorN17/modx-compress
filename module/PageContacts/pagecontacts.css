@@ -1,0 +1,26 @@
+
+.cont_1 {
+	float: left;
+	width: 200px;
+	margin: 0px 30px 5px 0px;
+	text-align: right;
+	font-weight: 600;
+}
+.cont_2 {
+	float: left;
+	width: 550px;
+	margin: 0px 0px 5px 0px;
+}
+.cont_map {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 310px;
+	z-index: 55;
+}
+.cont_br {
+	margin-bottom: 20px;
+}
+.cont_b {
+	font-weight: 600;
+}

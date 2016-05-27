@@ -1,0 +1,88 @@
+
+
+.modul_scorn_all {
+	padding: 10px 15px 10px 15px;
+	=background: #f4f4f4 url( '_images/fon_main_1.png' ) left top repeat;
+	color: #333;
+	font: normal 14px arial, verdana, tahoma, helvetica, sans-serif;
+}
+.modul_scorn_all h1 {
+	margin: 0px 0px 20px 0px;
+	font-size: 20px;
+	border-bottom: 1px solid #ddd;
+}
+
+
+.modul_scorn_all form {
+	margin: 0px;
+}
+
+
+
+.clr {
+	clear: both;
+	font-size: 0px;
+	line-height: 0px;
+}
+
+
+
+.pc_item {
+
+}
+	.pc_item .pci_type {
+		float: left;
+		width: 200px;
+		padding: 5px 10px;
+	}
+	.pc_item .pci_left {
+		float: left;
+		width: 200px;
+		padding: 5px 10px;
+	}
+	.pc_item .pci_right {
+		float: left;
+		width: 440px;
+		padding: 5px 10px;
+	}
+	.pc_item .pci_ind {
+		float: left;
+		width: 140px;
+		padding: 5px 10px;
+	}
+	.pc_item .pci_delete {
+		float: left;
+		width: 140px;
+		padding: 5px 10px;
+	}
+	.pci_type select, .pci_left input[type="text"], .pci_right input[type="text"], .pci_ind input[type="text"] {
+		width: 95%;
+		padding: 5px;
+	}
+	.pci_left input {
+		text-align: right;
+		font-weight: bold;
+	}
+	.pc_item .pci_ind input {
+		width: 45px;
+		text-align: center;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

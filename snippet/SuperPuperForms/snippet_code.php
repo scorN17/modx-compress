@@ -1,6 +1,6 @@
 <?php
 //SuperPuperForms
-//v002
+//v003
 //===============================================================================
 /*
 &form=`2`
@@ -16,17 +16,17 @@
 //
 //
 //===============================================================================
-$js= 'template/superpuperforms/superpuperforms.js'; // Путь к файлу JS
-$css= 'template/superpuperforms/superpuperforms.css'; // Путь к файлу CSS
+$js= 'superpuperforms/superpuperforms.js'; // Путь к файлу JS
+$css= 'superpuperforms/superpuperforms.css'; // Путь к файлу CSS
 $telefonchik__flag= true; // Прыгающий телефончик
-$veriword__flag[ 1 ]= false; // Captcha 1-й формы
-$veriword__flag[ 2 ]= false; // Captcha 2-й формы
+$veriword__flag[ 1 ]= true; // Captcha 1-й формы
+$veriword__flag[ 2 ]= true; // Captcha 2-й формы
 //===============================================================================
 //smtp//mail//default//
-$mailtype= 'smtp';
+$mailtype= 'mail';
 
 //КОМУ (через запятую)
-$mailto= 'sergey.it7@gmail.com';
+$mailto= '';
 
 //Видимые копии (через запятую)
 $mailcc= false;
@@ -35,11 +35,11 @@ $mailcc= false;
 $mailbcc= false;
 
 //ОТ (если SMTP, то это поле - логин)
-$mailfrom= 'rostov-ritual-ru@yandex.ru';
+$mailfrom= '';
 
 //Пароль от почты (если SMTP)
-$mailpassw= 'GuzNP_n3QXBa';
-//Любимый киногерой: mDLm97H_Ls7Y //Секретный вопрос от почты
+$mailpassw= '';
+//Любимый киногерой: ----- //Секретный вопрос от почты
 
 //Сервер SMTP (если SMTP)
 $smtp= 'smtp.yandex.ru';
@@ -70,7 +70,7 @@ if( $form ) $form_flag= true;
 
 if( $_GET[ 'act' ] == 'superpuperforms_captcha' )
 {
-	print '{"result":"ok","text":"'. MODX_MANAGER_URL.'includes/veriword.php?rand='.rand() .'"}';
+	print '{"result":"ok","text":"superpuperforms/dmt_captcha/veriword.php?id='. addslashes( $_GET[ 'dmtcaptchaid' ] ) .'"}';
 	if( isset( $_GET[ 'ajax' ] ) ){ exit(); }
 }
 if( $_GET[ 'act' ] == 'superpuperforms_send' )
@@ -84,7 +84,7 @@ if( $_GET[ 'act' ] == 'superpuperforms_send' )
 	$spfs_text= addslashes( trim( $_POST[ 'spfs_text' ] ) );
 	$spfs_text2= str_replace( "\r\n", "<br />", $spfs_text );
 	
-	if( $veriword__flag[ $spfs_formid ] && $_POST[ 'spfs_veriword' ] != $_SESSION[ 'veriword' ] )
+	if( $veriword__flag[ $spfs_formid ] && $_POST[ 'spfs_veriword' ] != $_SESSION[ 'DMTCaptcha' ][ 'superpuperforms_'.$spfs_formid ] )
 	{
 		$result= '{"result":"error","text":"Введен неверный текст с картинки!"}';
 	}elseif( ! $spfs_email && ! $spfs_phone ){
@@ -155,7 +155,6 @@ if( $_GET[ 'act' ] == 'superpuperforms_send' )
 			$result= '{"result":"error","text":"Ошибка сервера! Повторите попытку позже."}';
 		}
 	}
-	
 	print $result;
 	if( isset( $_GET[ 'ajax' ] ) ){ header( 'Content-Type:text/html; charset=UTF-8' ); exit(); }
 }
@@ -201,9 +200,9 @@ $(document).ready(function(){
 					<textarea class="form_elem" name="spfs_text"><?php print $mail_text;?></textarea>
 				</div>
 				<div class="clr">&nbsp;</div>
-				<?php if( $form_flag && $veriword__flag[ 1 ] ){ ?>
+				<?php if( $veriword__flag[ 1 ] ){ ?>
 				<div class="spfs_captcha">
-					<div class="spfs_label spfs_br"><img src="<?= MODX_MANAGER_URL.'includes/veriword.php?rand='.rand() ?>" /><div class="zvd">*</div></div>
+					<div class="spfs_label spfs_br"><img src="superpuperforms/dmt_captcha/veriword.php?id=superpuperforms_1" /><div class="spfs_change">Изменить число</div><div class="zvd">*</div></div>
 					<div class="spfs_input spfs_br">Введите текст с картинки:<br /><input class="form_elem" type="text" name="spfs_veriword" /></div>
 					<div class="clr">&nbsp;</div>
 				</div>
@@ -233,9 +232,9 @@ $(document).ready(function(){
 				<div class="clr">&nbsp;</div>
 				<div class="spfs_label">Когда позвонить?</div><div class="spfs_input"><input class="form_elem" type="text" name="spfs_kogda" /></div>
 				<div class="clr">&nbsp;</div>
-				<?php if( $form_flag && $veriword__flag[ 2 ] ){ ?>
+				<?php if( $veriword__flag[ 2 ] ){ ?>
 				<div class="spfs_captcha">
-					<div class="spfs_label spfs_br"><img src="<?= MODX_MANAGER_URL.'includes/veriword.php?rand='.rand() ?>" /><div class="zvd">*</div></div>
+					<div class="spfs_label spfs_br"><img src="superpuperforms/dmt_captcha/veriword.php?id=superpuperforms_2" /><div class="spfs_change">Изменить число</div><div class="zvd">*</div></div>
 					<div class="spfs_input spfs_br">Введите текст с картинки:<br /><input class="form_elem" type="text" name="spfs_veriword" /></div>
 					<div class="clr">&nbsp;</div>
 				</div>

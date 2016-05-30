@@ -1,6 +1,6 @@
 /*
 //SuperPuperForms
-//v002
+//v003
 */
 
 var $= jQuery.noConflict();
@@ -34,19 +34,22 @@ $(window).load(function(){
 						var result= $.parseJSON( data );
 						$( '.spfs_result', formelem ).show().removeClass( 'spfs_result_error' ).removeClass( 'spfs_result_ok' ).addClass( 'spfs_result_'+ result.result ).html( result.text );
 						if( result.result == 'ok' ) $( 'form', formelem ).remove();
-							else{
-								$( 'form .spfs_captcha input', formelem ).val('');
-								$.ajax({
-									url: $( 'form', formelem ).attr( 'action' ) +"?ajax&act=superpuperforms_captcha"
-								}).done(function(data2){
-									var result2= $.parseJSON( data2 );
-									if( result2.result == 'ok' ) $( 'form .spfs_captcha img', formelem ).attr( 'src', result2.text );
-								})
-							}
+							else{ }
 					});
 				return;
 			});
 		}
+	});
+	
+	$( '.superpuperforms_wrapper .spfs_change' ).click(function(){
+		var formelem= $( this ).parent().parent().parent().parent();
+		$( 'form .spfs_captcha input', formelem ).val('');
+		$.ajax({
+			url: $( 'form', formelem ).attr( 'action' ) +"?ajax&act=superpuperforms_captcha&dmtcaptchaid=superpuperforms_"+formelem.data( 'formid' )
+		}).done(function(data2){
+			var result2= $.parseJSON( data2 );
+			if( result2.result == 'ok' ) $( 'form .spfs_captcha img', formelem ).attr( 'src', result2.text );
+		})
 	});
 });
 

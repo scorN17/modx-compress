@@ -1,5 +1,5 @@
 - Необходимо подключение 2-х файлов JQuery ("jquery-2.x.x.min.js" и "jquery-ui.min.js")
-- Создать сниппет с именем "SuperPuperForms" и описанием "v002"
+- Создать сниппет с именем "SuperPuperForms" и описанием "v003"
 - Вставляем код
 - Заливаем на сервер папку "superpuperforms"
 

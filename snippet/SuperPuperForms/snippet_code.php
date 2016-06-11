@@ -18,9 +18,9 @@
 //===============================================================================
 $js= 'superpuperforms/superpuperforms.js'; // Путь к файлу JS
 $css= 'superpuperforms/superpuperforms.css'; // Путь к файлу CSS
-$telefonchik__flag= true; // Прыгающий телефончик
-$veriword__flag[ 1 ]= true; // Captcha 1-й формы
-$veriword__flag[ 2 ]= true; // Captcha 2-й формы
+$telefonchik__flag= false; // Прыгающий телефончик
+$veriword__flag[ 1 ]= false; // Captcha 1-й формы
+$veriword__flag[ 2 ]= false; // Captcha 2-й формы
 //===============================================================================
 //smtp//mail//default//
 $mailtype= 'mail';
@@ -234,7 +234,7 @@ $(document).ready(function(){
 				<div class="clr">&nbsp;</div>
 				<?php if( $veriword__flag[ 2 ] ){ ?>
 				<div class="spfs_captcha">
-					<div class="spfs_label spfs_br"><img src="superpuperforms/dmt_captcha/veriword.php?id=superpuperforms_2" /><div class="spfs_change">Изменить число</div><div class="zvd">*</div></div>
+					<div class="spfs_label spfs_br"><img src="superpuperforms/dmt_captcha/veriword.php?id=superpuperforms_2" /><div class="spfs_change">Изменить число</div></div>
 					<div class="spfs_input spfs_br">Введите текст с картинки:<br /><input class="form_elem" type="text" name="spfs_veriword" /></div>
 					<div class="clr">&nbsp;</div>
 				</div>

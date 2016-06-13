@@ -41,7 +41,7 @@ $margin_left= rand( 10, 50 );// отступ слева
 $margin_top= rand( 50, 60 ); // отступ сверху
 
 $font_count= 4;// Количество шрифтов в папке DMT_captcha_fonts идущих по порядку от 1 до $font_count
-$jpeg_quality= 100; // Качество картинки
+$jpeg_quality= 80; // Качество картинки
 $back_count= 5; // Количество фоновых рисунков в папке DMT_captcha_fonts идущих по порядку от 1 до $back_count
 $length= rand( 3, 4 );
 // Количество символов случайно от 3 до 4

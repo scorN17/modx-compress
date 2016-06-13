@@ -2,8 +2,7 @@
 //SuperPuperForms
 //v003
 */
-
-var $= jQuery.noConflict();
+(function($){ //var $= jQuery.noConflict();
 
 $(document).ready(function(){
 	$( '.superpuperforms_wrapper_popup .spfs_krestik' ).click(function(){
@@ -15,6 +14,7 @@ $(document).ready(function(){
 });
 
 $(window).load(function(){
+	if( ! $( '.superpuperforms_wrapper' ).length ) return;
 	$( '.superpuperforms_wrapper .spfs_krzhk' ).css({
 		top: 0,
 		left: ( $(window).width() - $( '.superpuperforms_wrapper .spfs_krzhk' ).outerWidth( true ) - 300 )
@@ -61,10 +61,12 @@ $(window).resize(function(){
 	superpuperforms_transform();
 });
 
+})(jQuery);
+
 function superpuperforms_show( formid )
 {
 	var wrapper= $( '.superpuperforms_wrapper_popup' );
-	var formelem= $( '.superpuperforms_wrapper .spfs_formwrapper_'+formid )
+	var formelem= $( '.superpuperforms_wrapper .spfs_formwrapper_'+formid );
 	$( 'body' ).css({ overflow: 'hidden' });
 	superpuperforms_transform();
 	$( '.spfs_formwrapper', wrapper ).hide();
@@ -85,6 +87,7 @@ function superpuperforms_hide()
 }
 function superpuperforms_transform()
 {
+	if( ! $( '.superpuperforms_wrapper_popup' ).length ) return;
 	var wrapper= $( '.superpuperforms_wrapper_popup' );
 	var ww= $( window ).width();
 	var wh= $( window ).height();
@@ -105,6 +108,7 @@ function superpuperforms_transform()
 }
 function superpuperforms_krzhk_position()
 {
+	if( ! $( '.superpuperforms_wrapper' ).length ) return;
 	var ww= $(window).width();
 	var wh= $(window).height();
 	var left= ww - $( '.superpuperforms_wrapper .spfs_krzhk' ).outerWidth( true ) - 200;
@@ -113,6 +117,7 @@ function superpuperforms_krzhk_position()
 }
 function superpuperforms_krzhk_animate()
 {
+	if( ! $( '.superpuperforms_wrapper' ).length ) return;
 	$( '.superpuperforms_wrapper .spfs_krzhk' ).stop().animate({ top: '-=150', opacity: 0 }, 200, function(){
 		$( '.superpuperforms_wrapper .spfs_krzhk' ).animate({ top: '+=150', opacity: 1 }, 1000 );
 	});
@@ -120,9 +125,9 @@ function superpuperforms_krzhk_animate()
 }
 function superpuperforms_krzhk_animate_2()
 {
+	if( ! $( '.superpuperforms_wrapper' ).length ) return;
 	$( '.superpuperforms_wrapper .spfs_krzhk' ).stop().animate({ borderColor: 'rgba(255,174,18,0.5)' }, 200, function(){
 		$( '.superpuperforms_wrapper .spfs_krzhk' ).animate({ borderColor: 'rgba(255,174,18,0)' }, 1500 );
 	});
 	setTimeout( 'superpuperforms_krzhk_animate_2()', 10000 );
 }
-

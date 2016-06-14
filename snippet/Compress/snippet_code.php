@@ -1,11 +1,12 @@
 <?php
-//v08
-//13.06.2016
+//v09
+//14.06.2016
 //Compress
 /*	&compress=true/false
 	&file - компрессит в filename.compress.css один файл
 	&files - компрессит в all.compress.css все указанные файлы
 	&tofile - файл, в который комперссить все указанные файлы
+	&print=false/true - выводить код, а не путь к файлу
 	&r=true/false - принудительно пересоздает компресс-файлы
 	[!Compress? &file=`css/styles.css`!]
 	[!Compress? &files=`css: styles.css, catalog.css; css2: shop.css; css3/dop.css` &tofile=`css/all.compress.css`!]
@@ -158,5 +159,12 @@ if( $refresh && $filesarray )
 	fclose( $file_to_handle );
 }
 //============================================================================
-return $file_to;
+if( $print === 'true' )
+{
+	$filecontent= '';
+	$file_to_handle= fopen( $root . $file_to, 'r' );
+	while( ! feof( $file_to_handle ) ) $filecontent .= fread( $file_to_handle, 1024*64 );
+	fclose( $file_to_handle );
+	return $filecontent;
+}else return $file_to;
 ?>

@@ -84,13 +84,13 @@ if( $refresh && $filesarray )
 	$files_in_array= ( count( $filesarray ) > 1 ? true : false );
 	$size_before= 0;
 	$file_to_handle= fopen( $root . $file_to, 'w' );
-	if( $files_in_array ) fwrite( $file_to_handle, "/*" );
+	if( $files_in_array ) fwrite( $file_to_handle, "/*\n" );
 	foreach( $filesarray AS $filerow )
 	{
 		$size_before += filesize( $root . $filerow );
-		if( $files_in_array ) fwrite( $file_to_handle, "\t".$filerow."\n" );
+		if( $files_in_array ) fwrite( $file_to_handle, $filerow."\n" );
 	}
-	if( $files_in_array )fwrite( $file_to_handle, "*/\n\n" );
+	if( $files_in_array )fwrite( $file_to_handle, "*/\n" );
 	foreach( $filesarray AS $filerow )
 	{
 		$filecontent= "";
@@ -108,7 +108,7 @@ if( $refresh && $filesarray )
 						foreach( $pregreplace_type_0 AS $pattern => $replacement )
 							$filecontent= preg_replace( $pattern, $replacement, $filecontent );
 					}
-					if( $filetype == '.css' ) if( $strtr_type ) $part[0]= strtr( $filecontent, $strtr_type );
+					if( $filetype == '.css' ) if( $strtr_type ) $filecontent= strtr( $filecontent, $strtr_type );
 					
 					if( $filetype != '.css' )
 					{
@@ -150,12 +150,12 @@ if( $refresh && $filesarray )
 						}
 					}
 				}
-				fwrite( $file_to_handle, "/* {$filerow} */\n".$filecontent."\n\n" );
+				fwrite( $file_to_handle, "/*{$filerow}*/".$filecontent."\n\n" );
 			}
 		}
 	}
 	$size_after= filesize( $root . $file_to );
-	fwrite( $file_to_handle, "/* Compress ".round( $size_after * 100 / $size_before )."% */" );
+	fwrite( $file_to_handle, "/*Compress ".round( $size_after * 100 / $size_before )."%*/" );
 	fclose( $file_to_handle );
 }
 //============================================================================

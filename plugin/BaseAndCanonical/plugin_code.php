@@ -1,4 +1,8 @@
-	//MODX_SITE_URL = http://domain.ru/
+<?php
+//v004
+//BaseAndCanonical
+//=========================================================================================
+//MODX_SITE_URL = http://domain.ru/
 	//$_SERVER[ 'REDIRECT_URL' ] = /sdfsdf/mail.html
 	
 	//<base href="" />
@@ -10,8 +14,8 @@ $html= $modx->documentOutput;
 if( true || isset( $_GET[ 'test' ] ) )
 {
 	$wsite= rtrim( MODX_SITE_URL, "/" );
-	//$redirurl= ( ! empty( $_SERVER[ 'REDIRECT_URL' ] ) ? $_SERVER[ 'REDIRECT_URL' ] : '/' );
-	$redirurl= $modx->makeUrl( $modx->documentIdentifier );
+	$redirurl= ( ! empty( $_SERVER[ 'REDIRECT_URL' ] ) ? $_SERVER[ 'REDIRECT_URL' ] : '/' );
+	//$redirurl= $modx->makeUrl( $modx->documentIdentifier );
 	
 	$uri= strpos( $_SERVER[ 'REQUEST_URI' ], "?" );
 	$get= '';
@@ -49,3 +53,4 @@ if( true || isset( $_GET[ 'test' ] ) )
 }
 
 $modx->documentOutput= $html;
+?>

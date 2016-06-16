@@ -14,5 +14,6 @@
 
 <script type="text/javascript" src="[!Compress? &files=`template/js/: dopscript.js, superslider.js, catalogfilter.js, shop.js, javascript.js` &tofile=`template/js/all.compress.js`!]"></script>
 
+А можно выводить сжатый код, а не путь к файлу дописав параметр: &print=`true`
 
 [!!] - используйте именно этот вариант, иначе сжатый файл не будет пересоздаваться при измении оригиналов.

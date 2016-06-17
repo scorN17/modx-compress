@@ -162,7 +162,7 @@ if( $_GET[ 'act' ] == 'superpuperforms_send' )
 <link rel="stylesheet" type="text/css" href="<?= $css ?>" />
 <script type="text/javascript" src="<?= $js ?>"></script>
 <script type="text/javascript">
-$(document).ready(function(){
+(function($){$(document).ready(function(){
 <?php
 	if( ! $form_flag )
 	{
@@ -173,7 +173,7 @@ $(document).ready(function(){
 		}
 	}
 ?>
-});
+});})(jQuery);
 </script>
 
 <?php if( $telefonchik__flag && ! $form_flag ){ ?>

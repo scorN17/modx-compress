@@ -1,11 +1,13 @@
 <?php
-//v02
+//v03
+//PageContacts - snippet
+//17.06.2016
 //=====================================================================================
 $sm_base= '../assets/modules/scorn_page_contacts/';
 $module_url= MODX_MANAGER_URL .'?a='. $_GET[ 'a' ] .'&id='. $_GET[ 'id' ];
-
 mysql_query( "CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'page_contacts' )." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `block` int(11) NOT NULL,
   `type` int(11) NOT NULL,
   `left` varchar(255) NOT NULL,
   `right` text NOT NULL,
@@ -14,18 +16,29 @@ mysql_query( "CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'page_contac
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;" );
 
+$myblock= ( $_GET[ 'block' ] ? intval( $_GET[ 'block' ] ) : 0 );
 
-
-
-if( $_GET[ 'act' ] == 'addnewitem' )
+if( $_GET[ 'act' ] == 'addnewblock' )
 {
-	mysql_query( "INSERT INTO ".$modx->getFullTableName( 'page_contacts' )." SET `right`='Новая строка'" );
-	header( 'location: '. $module_url );
+	$newblock= false;
+	$rr= mysql_query( "SELECT block FROM ".$modx->getFullTableName( 'page_contacts' )." ORDER BY block DESC LIMIT 1" );
+	if( $rr && mysql_num_rows( $rr ) == 1 )
+	{
+		$newblock= mysql_result( $rr, 0, 'block' ) + 1;
+	}elseif( $rr ){
+		$newblock= 0;
+	}
+	if( $newblock !== false ) mysql_query( "INSERT INTO ".$modx->getFullTableName( 'page_contacts' )." SET block={$newblock}, `right`='Новая строка'" );
+	header( 'location: '. $module_url .'&block='. $myblock );
 	exit();
 }
 
-
-
+if( $_GET[ 'act' ] == 'addnewitem' )
+{
+	mysql_query( "INSERT INTO ".$modx->getFullTableName( 'page_contacts' )." SET block={$myblock}, `right`='Новая строка'" );
+	header( 'location: '. $module_url .'&block='. $myblock );
+	exit();
+}
 
 if( isset( $_POST[ 'save' ] ) )
 {
@@ -41,7 +54,7 @@ if( isset( $_POST[ 'save' ] ) )
 		{
 			if( $delete[ $key ] == 'delete' )
 			{
-				mysql_query( "DELETE FROM ".$modx->getFullTableName( 'page_contacts' )." WHERE id={$key} LIMIT 1" );
+				mysql_query( "DELETE FROM ".$modx->getFullTableName( 'page_contacts' )." WHERE id={$key} AND block={$myblock} LIMIT 1" );
 				continue 1;
 			}
 			
@@ -63,17 +76,14 @@ if( isset( $_POST[ 'save' ] ) )
 			
 			mysql_query( "UPDATE ".$modx->getFullTableName( 'page_contacts' )." SET
 				`type`='". $type[ $key ] ."', `left`='". $left[ $key ] ."', `right`='". $right[ $key ] ."', br='". $br[ $key ] ."', `index`='". $index[ $key ] ."'
-					WHERE id={$key} LIMIT 1" );
+					WHERE id={$key} AND block={$myblock} LIMIT 1" );
 		}
 	}
-	header( 'location: '. $module_url );
+	$modx->clearCache();
+	header( 'location: '. $module_url .'&block='. $myblock );
 	exit();
 }
-
-
-
-
-$rr= mysql_query( "SELECT * FROM ".$modx->getFullTableName( 'page_contacts' )." ORDER BY `index`" );
+$rr= mysql_query( "SELECT * FROM ".$modx->getFullTableName( 'page_contacts' )." WHERE block={$myblock} ORDER BY `index`" );
 if( $rr && mysql_num_rows( $rr ) > 0 )
 {
 	while( $row= mysql_fetch_assoc( $rr ) )
@@ -90,6 +100,7 @@ if( $rr && mysql_num_rows( $rr ) > 0 )
 				<option '.( $row[ 'type' ] == 3 ? 'selected="selected"' : '' ).' value="3">Карта</option>
 				<option '.( $row[ 'type' ] == 4 ? 'selected="selected"' : '' ).' value="4">Крупный текст</option>
 				<option '.( $row[ 'type' ] == 5 ? 'selected="selected"' : '' ).' value="5">Заголовок H3</option>
+				<option '.( $row[ 'type' ] == 6 ? 'selected="selected"' : '' ).' value="6">Жирный шрифт</option>
 			</select></div>
 			
 			<div class="pci_left"><input type="text" name="left['. $row[ 'id' ] .']" value="'. $row[ 'left' ] .'" /></div>
@@ -107,8 +118,6 @@ if( $rr && mysql_num_rows( $rr ) > 0 )
 		</div>';
 	}
 }
-
-
 if( $result != '' ) $result .= '<br /><br />';
 if( $result2 != '' ) $result2 .= '<br /><br />';
 ?>
@@ -117,26 +126,28 @@ if( $result2 != '' ) $result2 .= '<br /><br />';
 <link rel="stylesheet" type="text/css" href="<?php print $sm_base;?>_styles.css" />
 <script type="text/javascript" src="//yandex.st/jquery/2.1.0/jquery.min.js"></script>
 <script type="text/javascript" src="//yandex.st/jquery-ui/1.10.4/jquery-ui.min.js"></script>
+	
+<div class="topmenu">
+	<ul>
+		<li class="<?=( $myblock===0 ? 'active' : '' )?>"><a href="<?= $module_url ?>">Основные контакты</a></li>
+<?php
+	$rr= mysql_query( "SELECT block FROM ".$modx->getFullTableName( 'page_contacts' )." WHERE block>0 GROUP BY block ORDER BY block" );
+			   if( $rr && mysql_num_rows( $rr ) > 0 )
+			   {
+				   while( $row= mysql_fetch_assoc( $rr ) )
+				   {
+					   print '<li class="'.( $myblock == $row['block'] ? 'active' : '' ).'"><a href="'. $module_url .'&block='. $row['block'] .'">Блок '.( $row['block']+1 ).'</a></li>';
+				   }
+			   }
+?>
+		<li><a href="<?= $module_url ?>&act=addnewblock">Добавить блок контактов</a></li>
+	</ul>
+	<div class="clr">&nbsp;</div>
+</div>
 
 
-<form action="<?= $module_url ?>" method="post">
+<form action="<?= $module_url ?>&block=<?= $myblock ?>" method="post">
 <?= $print ?>
 <div style="padding:20px 0px;"><button style="font-size:20px;" type="submit" name="save">Сохранить изменения</button></div>
 </form>
-<div style="padding:20px 0px;"><a style="font-size:20px;" href="<?= $module_url ?>&act=addnewitem">+ Добавить строку</a></div>
-
-
-<?php
-function clearCache()
-{
-	global $modx;
-	
-	$modx->clearCache();
-	
-	include_once MODX_BASE_PATH . 'manager/processors/cache_sync.class.processor.php';
-	$sync= new synccache();
-	$sync->setCachepath( MODX_BASE_PATH . "assets/cache/" );
-	$sync->setReport( false );
-	$sync->emptyCache();
-}
-?>
+<div style="padding:20px 0px;"><a style="font-size:20px;" href="<?= $module_url ?>&act=addnewitem&block=<?= $myblock ?>">+ Добавить строку</a></div>

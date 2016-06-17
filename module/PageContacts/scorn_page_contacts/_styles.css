@@ -1,4 +1,9 @@
-
+/*
+//v03
+//PageContacts - snippet
+//17.06.2016
+//=====================================================================================
+*/
 
 .modul_scorn_all {
 	padding: 10px 15px 10px 15px;
@@ -24,6 +29,46 @@
 	font-size: 0px;
 	line-height: 0px;
 }
+
+
+.topmenu {
+	background: #000 url( '/manager/media/style/MODxRE/images/misc/headers.jpg' ) left bottom no-repeat;
+	padding: 10px 0px 9px 20px;
+	margin: 0px 0px 30px 0px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+	.topmenu ul {
+		color: #dae4e5;
+		text-decoration: none;
+		padding: 0px;
+		margin: 0px;
+		list-style: none;
+	}
+		.topmenu ul li {
+			padding: 0px;
+			margin: 0px;
+			float: left;
+			border-right: 1px solid #849a9a;
+		}
+			.topmenu ul li a {
+				color: #dae4e5;
+				padding: 2px 15px 1px 15px;
+				display: block;
+				text-decoration: none;
+				font-size: 14px;
+				letter-spacing: 1px;
+				text-transform: uppercase;
+			}
+				.topmenu ul li.active a {
+					background: rgba( 255,255,255, 0.3 );
+					color: #fff;
+				}
+				.topmenu ul li a:hover {
+					background: rgba( 255,255,255, 0.3 );
+					color: #fff;
+				}
 
 
 
@@ -67,22 +112,3 @@
 		width: 45px;
 		text-align: center;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

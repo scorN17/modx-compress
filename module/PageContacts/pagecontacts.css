@@ -1,4 +1,3 @@
-
 .cont_1 {
 	float: left;
 	width: 200px;
@@ -24,3 +23,17 @@
 .cont_b {
 	font-weight: 600;
 }
+.cont_block {
+	float: left;
+	width: 380px;
+	padding: 0 0 30px;
+}
+	.cont_block_alt {
+		float: right;
+	}
+	.cont_block .cont_1 {
+		width: 115px;
+	}
+	.cont_block .cont_2 {
+		width: 230px;
+	}

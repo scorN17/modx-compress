@@ -1,6 +1,6 @@
 <?php
-//v09
-//14.06.2016
+//v095
+//18.06.2016
 //Compress
 /*	&compress=true/false
 	&file - компрессит в filename.compress.css один файл
@@ -113,7 +113,7 @@ if( $refresh && $filesarray )
 					if( $filetype != '.css' )
 					{
 						$parts= array();
-						$curpos= 0;
+						$kovpos= $curpos= 0;
 						$string_flag= false;
 						while( true )
 						{
@@ -121,14 +121,28 @@ if( $refresh && $filesarray )
 							$kov2= ( $string_flag === '1' ? false : strpos( $filecontent, "'", $curpos+1 ) );
 							if( $kov1 === false && $kov2 === false )
 							{
-								$parts[]= array( substr( $filecontent, $curpos ).( $string_flag === '1' ? "\"" : ( $string_flag === '2' ? "'" : '' ) ), ( $string_flag ? $string_flag : false ) );
+								$parts[]= array( substr( $filecontent, $kovpos ).( $string_flag === '1' ? "\"" : ( $string_flag === '2' ? "'" : '' ) ), ( $string_flag ? $string_flag : false ) );
 								break;
 							}else{
 								if( $kov1 === false ) $kov1= $kov2 + 1;
 								if( $kov2 === false ) $kov2= $kov1 + 1;
-								$parts[]= array( substr( $filecontent, $curpos+( $string_flag ? 1 : 0 ), ( $kov1 < $kov2 ? $kov1 : $kov2 )-($curpos+( $string_flag ? 1 : -1 )) ), ( $string_flag ? $string_flag : false ) );
-								$string_flag= ( $string_flag ? false : ( $kov1 < $kov2 ? '1' : '2' ) );
 								$curpos= ( $kov1 < $kov2 ? $kov1 : $kov2 );
+								$ii= 1; $cc= 0;
+								if( $string_flag )
+								{
+									while( substr( $filecontent, ( $kov1 < $kov2 ? $kov1 : $kov2 )-$ii, 1 ) == "\\" )
+									{
+										$ii++; $cc++;
+									}
+								}
+								$vse_eshe_text= ( $string_flag && $cc%2!=0 ? true : false );
+								if( ! $string_flag || ( ! $parts[count($parts)-1][1] && ! $vse_eshe_text ) )
+								{
+									$parts[]= array( substr( $filecontent, $kovpos+( $string_flag ? 1 : 0 ), ( $kov1 < $kov2 ? $kov1 : $kov2 )-($kovpos+( $string_flag ? 1 : -1 )) ),
+												( $string_flag ? $string_flag : false ) );
+									$string_flag= ( $string_flag ? false : ( $kov1 < $kov2 ? '1' : '2' ) );
+									$kovpos= $curpos;
+								}
 							}
 						}
 						$filecontent= '';

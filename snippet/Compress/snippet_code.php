@@ -1,5 +1,5 @@
 <?php
-//v095
+$varsion= 'v010';
 //18.06.2016
 //Compress
 /*	&compress=true/false
@@ -13,10 +13,8 @@
 */
 //============================================================================
 $strtr[ '.css' ]= array(
-	"\r"=>'', "\n"=>'', "\t"=>'',
 );
 $strtr[ '.js' ]= array(
-	"\r"=>'', "\n"=>'', "\t"=>'',
 );
 $pregreplace[ '.css' ][0]= array(
 	"/\/\*(.*)\*\//sU" => "",
@@ -81,16 +79,13 @@ if( true )
 $refresh= ( $refresh || ! empty( $r ) ? true : false );
 if( $refresh && $filesarray )
 {
-	$files_in_array= ( count( $filesarray ) > 1 ? true : false );
 	$size_before= 0;
 	$file_to_handle= fopen( $root . $file_to, 'w' );
-	if( $files_in_array ) fwrite( $file_to_handle, "/*\n" );
+	if( $files ) fwrite( $file_to_handle, "/*{$files}*/\n\n" );
 	foreach( $filesarray AS $filerow )
 	{
 		$size_before += filesize( $root . $filerow );
-		if( $files_in_array ) fwrite( $file_to_handle, $filerow."\n" );
 	}
-	if( $files_in_array )fwrite( $file_to_handle, "*/\n" );
 	foreach( $filesarray AS $filerow )
 	{
 		$filecontent= "";
@@ -130,7 +125,7 @@ if( $refresh && $filesarray )
 								$ii= 1; $cc= 0;
 								if( $string_flag )
 								{
-									while( substr( $filecontent, ( $kov1 < $kov2 ? $kov1 : $kov2 )-$ii, 1 ) == "\\" )
+									while( substr( $filecontent, $curpos-$ii, 1 ) == "\\" )
 									{
 										$ii++; $cc++;
 									}
@@ -138,7 +133,7 @@ if( $refresh && $filesarray )
 								$vse_eshe_text= ( $string_flag && $cc%2!=0 ? true : false );
 								if( ! $string_flag || ( ! $parts[count($parts)-1][1] && ! $vse_eshe_text ) )
 								{
-									$parts[]= array( substr( $filecontent, $kovpos+( $string_flag ? 1 : 0 ), ( $kov1 < $kov2 ? $kov1 : $kov2 )-($kovpos+( $string_flag ? 1 : -1 )) ),
+									$parts[]= array( substr( $filecontent, $kovpos+( $string_flag ? 1 : 0 ), $curpos-($kovpos+( $string_flag ? 1 : -1 )) ),
 												( $string_flag ? $string_flag : false ) );
 									$string_flag= ( $string_flag ? false : ( $kov1 < $kov2 ? '1' : '2' ) );
 									$kovpos= $curpos;
@@ -164,12 +159,13 @@ if( $refresh && $filesarray )
 						}
 					}
 				}
-				fwrite( $file_to_handle, "/*{$filerow}*/".$filecontent."\n\n" );
+				fwrite( $file_to_handle, "/*{$filerow}*/\n".$filecontent."\n\n" );
 			}
 		}
 	}
 	$size_after= filesize( $root . $file_to );
-	fwrite( $file_to_handle, "/*Compress ".round( $size_after * 100 / $size_before )."%*/" );
+	//$md5_after= md5_file( $root . $file_to );
+	fwrite( $file_to_handle, "/*Compress {$varsion} - ".round( $size_after * 100 / $size_before )."%".( $md5_after ? " - ".$md5_after : "" )."*/" );
 	fclose( $file_to_handle );
 }
 //============================================================================

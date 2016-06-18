@@ -7,8 +7,8 @@ $varsion= 'v11';
 	&files - компрессит в all.compress.css все указанные файлы
 	&tofile - файл, в который комперссить все указанные файлы
 	&print=false/true - выводить код, а не путь к файлу
-	&r=true/false - принудительно пересоздает компресс-файлы
-	&rvars=true/false - замена переменных
+	&r=false/true - принудительно пересоздает компресс-файлы
+	&rvars=false/true - замена переменных
 	[!Compress? &file=`css/styles.css`!]
 	[!Compress? &files=`css: styles.css, catalog.css; css2: shop.css; css3/dop.css` &tofile=`css/all.compress.css`!]
 */
@@ -142,7 +142,7 @@ if( $refresh && $filesarray )
 							}
 						}
 						
-						if( $rvars !== 'false' )
+						if( $rvars === 'true' )
 						{
 							preg_match_all( "/var [a-zA-Z0-9_]+?/U", $filecontent, $matches );
 							if( $matches )

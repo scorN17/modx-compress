@@ -186,7 +186,7 @@ if( $refresh && $filesarray )
 	}
 	$size_after= filesize( $root . $file_to );
 	//$md5_after= md5_file( $root . $file_to );
-	fwrite( $file_to_handle, "/*Compress {$varsion} - ".round( $size_after * 100 / $size_before, 3 )."%".( $md5_after ? " - ".$md5_after : "" )."*/" );
+	fwrite( $file_to_handle, "/*Compress {$varsion} - ".round( $size_after * 100 / $size_before )."%".( $md5_after ? " - ".$md5_after : "" )."*/" );
 	fclose( $file_to_handle );
 }
 //============================================================================

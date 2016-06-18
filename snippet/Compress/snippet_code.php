@@ -1,5 +1,5 @@
 <?php
-$varsion= 'v010';
+$varsion= 'v11';
 //18.06.2016
 //Compress
 /*	&compress=true/false
@@ -8,6 +8,7 @@ $varsion= 'v010';
 	&tofile - файл, в который комперссить все указанные файлы
 	&print=false/true - выводить код, а не путь к файлу
 	&r=true/false - принудительно пересоздает компресс-файлы
+	&rvars=true/false - замена переменных
 	[!Compress? &file=`css/styles.css`!]
 	[!Compress? &files=`css: styles.css, catalog.css; css2: shop.css; css3/dop.css` &tofile=`css/all.compress.css`!]
 */
@@ -140,6 +141,26 @@ if( $refresh && $filesarray )
 								}
 							}
 						}
+						
+						if( $rvars !== 'false' )
+						{
+							preg_match_all( "/var [a-zA-Z0-9_]+?/U", $filecontent, $matches );
+							if( $matches )
+							{
+								foreach( $matches[0] AS $row )
+								{
+									$var= str_replace( 'var ', '', $row );
+									$vars[ $var ]= true;
+								}
+								foreach( $matches[0] AS $row )
+								{
+									$var= str_replace( 'var ', '', $row );
+									do{ $varnum++; }while( $vars[ '_'.$varnum ] );
+									$pregreplace_type_1[ "/([^a-zA-Z0-9_])(". $var .")([^a-zA-Z0-9_])/U" ]= '${1}_'.$varnum.'${3}';
+								}
+							}
+						}
+						
 						$filecontent= '';
 						if( $parts )
 						{
@@ -165,7 +186,7 @@ if( $refresh && $filesarray )
 	}
 	$size_after= filesize( $root . $file_to );
 	//$md5_after= md5_file( $root . $file_to );
-	fwrite( $file_to_handle, "/*Compress {$varsion} - ".round( $size_after * 100 / $size_before )."%".( $md5_after ? " - ".$md5_after : "" )."*/" );
+	fwrite( $file_to_handle, "/*Compress {$varsion} - ".round( $size_after * 100 / $size_before, 3 )."%".( $md5_after ? " - ".$md5_after : "" )."*/" );
 	fclose( $file_to_handle );
 }
 //============================================================================

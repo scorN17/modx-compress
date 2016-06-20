@@ -1,3 +1,4 @@
+<?php
 $varsion= 'v1.0';
 //20.06.2016
 //CompressHTML
@@ -32,3 +33,4 @@ if( ! isset( $_GET[ 'test' ] ) )
 
 	$modx->documentOutput= $filecontent;
 }
+?>

@@ -71,7 +71,7 @@
 		ExpiresActive on
 		ExpiresDefault A604800
 		<FilesMatch .*\.(shtml|html|phtml|php)$>
-	        ExpiresActive Off
-	    </FilesMatch>
+	        	ExpiresActive Off
+		</FilesMatch>
 	</IfModule>
 # -----------------------------------------------------------------------

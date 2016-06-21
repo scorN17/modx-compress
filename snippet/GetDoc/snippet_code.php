@@ -1,5 +1,5 @@
 <?php
-// 6.0 ver.
+// 6.1 ver.
 //==========================================================================
 	
 	// idslist - только эти документы
@@ -9,7 +9,7 @@
 	// type = this | childs | all
 	// depth = 0 | 3 | 1,2,4 : 4-макс.уровень, а 1 и 2 игнорируются
 	// fields = 'pagetitle,content'
-	// tvfileds = 'image,price'
+	// tvfields = 'image,price'
 	// sort = 'field DESC, field_2 ASC'
 	// tpl = 0 | 10 | 6,-7,8
 	// isf
@@ -21,7 +21,7 @@
 	// del
 
 // ВЫЧЛЕНЕНИЕ ДОКУМЕНТОВ
-	//function getdoc50( $ids='0,1', $type='childs', $depth=0, $fields='', $tvfileds='', $sort='isfolder DESC, menuindex', $tpl=0, $isf='all', $param='', $query='', $limit=0, $clone='' )
+	//function getdoc50( $ids='0,1', $type='childs', $depth=0, $fields='', $tvfields='', $sort='isfolder DESC, menuindex', $tpl=0, $isf='all', $param='', $query='', $limit=0, $clone='' )
 	//{
 	
 	$table1= 'site_content';
@@ -39,16 +39,16 @@
 			$arr_fields= explode( ',', $fields );
 		}
 		
-		if( ! empty( $tvfileds ) )
+		if( ! empty( $tvfields ) )
 		{
-			$tvfileds= explode( ',', $tvfileds );
-			$tvfileds_flag= true;
-			foreach( $tvfileds AS $val )
+			$tvfields= explode( ',', $tvfields );
+			$tvfields_flag= true;
+			foreach( $tvfields AS $val )
 			{
-				if( $qq_tvfileds != "" ) $qq_tvfileds .= " OR ";
-				$qq_tvfileds .= "tv.`name`='{$val}'";
+				if( $qq_tvfields != "" ) $qq_tvfields .= " OR ";
+				$qq_tvfields .= "tv.`name`='{$val}'";
 			}
-			if( $qq_tvfileds ) $qq_tvfileds= "AND ( {$qq_tvfileds} )";
+			if( $qq_tvfields ) $qq_tvfields= "AND ( {$qq_tvfields} )";
 		}
 			
 		if( $tpl )
@@ -207,7 +207,7 @@
 			{
 				$itogo[ $row[ 'id' ] ]= $row;
 				
-				if( $tvfileds_flag )
+				if( $tvfields_flag )
 				{
 					if( $qq_ids != "" ) $qq_ids .= " OR ";
 					$qq_ids .= "tvc.contentid={$row[id]}";
@@ -215,11 +215,11 @@
 			}
 		}
 		
-		if( $tvfileds_flag && ! empty( $itogo ) )
+		if( $tvfields_flag && ! empty( $itogo ) )
 		{
 			if( $qq_ids ) $qq_ids= "AND ( {$qq_ids} )";
 			
-			$rr= mysql_query( "SELECT id, name, default_text FROM ". $modx->getFullTableName( $table2 ) ." AS tv WHERE 1=1 {$qq_tvfileds}" );
+			$rr= mysql_query( "SELECT id, name, default_text FROM ". $modx->getFullTableName( $table2 ) ." AS tv WHERE 1=1 {$qq_tvfields}" );
 			if( $rr )
 			{
 				while( $row= mysql_fetch_assoc( $rr ) )
@@ -229,7 +229,7 @@
 			}
 			
 			$rr= mysql_query( "SELECT tv.default_text,tv.`name`,tvc.contentid,tvc.`value` FROM ". $modx->getFullTableName( $table2 ) ." AS tv, ". $modx->getFullTableName( $table3 ) ." AS tvc
-				WHERE tv.id=tvc.tmplvarid {$qq_tvfileds} {$qq_ids} ORDER BY tv.id" );
+				WHERE tv.id=tvc.tmplvarid {$qq_tvfields} {$qq_ids} ORDER BY tv.id" );
 			if( $rr )
 			{
 				while( $row= mysql_fetch_assoc( $rr ) )
@@ -240,7 +240,7 @@
 			
 			foreach( $itogo AS $key => $val )
 			{
-				foreach( $tvfileds AS $key2 => $val2 )
+				foreach( $tvfields AS $key2 => $val2 )
 				{
 					if( ! isset( $val[ $val2 ] ) || empty( $val[ $val2 ] ) )
 						$itogo[ $key ][ $val2 ]= $tvdefault[ $val2 ];

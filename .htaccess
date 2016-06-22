@@ -15,7 +15,9 @@
 	# Fix Apache internal dummy connections from breaking [(site_url)] cache
 	RewriteCond %{HTTP_USER_AGENT} ^.*internal\ dummy\ connection.*$ [NC]
 	RewriteRule .* - [F,L]
-
+	
+	
+	#------------------------------ REDIRECTS -------------------------------
 	# Rewrite domain.com -> www.domain.com -- used with SEO Strict URLs plugin
 	#RewriteCond %{HTTP_HOST} !^$
 	#RewriteCond %{HTTP_HOST} !^www\. [NC]
@@ -31,9 +33,8 @@
 	#RewriteCond %{HTTP_HOST} .
 	#RewriteCond %{HTTP_HOST} ^www.(.*)$ [NC]
 	#RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
-	
 	#------------------------------ REDIRECTS -------------------------------
-	#------------------------------ REDIRECTS -------------------------------
+
 
 	# Exclude /assets and /manager directories and images from rewrite rules
 	RewriteRule ^(manager|assets)/.*$ - [L]
@@ -70,6 +71,8 @@
 	<IfModule mod_expires.c>
 		ExpiresActive on
 		ExpiresDefault A604800
+		ExpiresByType image/jpeg A604800
+		ExpiresByType image/gif A604800
 		<FilesMatch .*\.(shtml|html|phtml|php)$>
 	        	ExpiresActive Off
 		</FilesMatch>

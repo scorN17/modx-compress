@@ -49,24 +49,29 @@
 	php_flag zlib.output_compression On
 	php_value zlib.output_compression_level 9
 	
+	Options -indexes
+	
 	<IfModule mod_deflate.c>
 	    AddEncoding gzip .gz
-	    AddOutputFilterByType DEFLATE image/x-icon
 	    AddOutputFilterByType DEFLATE text/css
 	    AddOutputFilterByType DEFLATE text/javascript
-	    AddOutputFilterByType DEFLATE application/x-javascript
-	    AddOutputFilterByType DEFLATE application/javascript
-	    AddOutputFilterByType DEFLATE application/json
 	    AddOutputFilterByType DEFLATE text/plain
 	    AddOutputFilterByType DEFLATE text/x-component
 	    AddOutputFilterByType DEFLATE text/xml
+	    AddOutputFilterByType DEFLATE application/x-javascript
+	    AddOutputFilterByType DEFLATE application/javascript
+	    AddOutputFilterByType DEFLATE application/json
 	    AddOutputFilterByType DEFLATE application/xml
 	    AddOutputFilterByType DEFLATE application/rss+xml
 	    AddOutputFilterByType DEFLATE application/atom+xml
+	    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+	    AddOutputFilterByType DEFLATE image/x-icon
+	    AddOutputFilterByType DEFLATE image/svg+xml
 	    AddOutputFilterByType DEFLATE font/truetype
 	    AddOutputFilterByType DEFLATE font/opentype
-	    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
-	    AddOutputFilterByType DEFLATE image/svg+xml
+	    AddOutputFilterByType DEFLATE font/ttf
+	    AddOutputFilterByType DEFLATE font/otf
+	    AddOutputFilterByType DEFLATE font/x-woff
 	</IfModule>
 	<IfModule mod_expires.c>
 		ExpiresActive on

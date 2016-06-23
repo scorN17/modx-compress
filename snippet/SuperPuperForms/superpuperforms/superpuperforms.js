@@ -111,8 +111,8 @@ function superpuperforms_krzhk_position()
 	if( ! $( '.superpuperforms_wrapper' ).length ) return;
 	var ww= $(window).width();
 	var wh= $(window).height();
-	var left= ww - $( '.superpuperforms_wrapper .spfs_krzhk' ).outerWidth( true ) - 200;
-	var top= ( wh - $( '.superpuperforms_wrapper .spfs_krzhk' ).outerHeight( true ) ) / 2 + $(window).scrollTop();
+	var left= ww - $( '.superpuperforms_wrapper .spfs_krzhk' ).outerWidth( true ) - ( ww < 1700 ? 0 : 200 );
+	var top= ( wh - $( '.superpuperforms_wrapper .spfs_krzhk' ).outerHeight( true ) ) / ( ww < 1700 ? 1.1 : 2 ) + $(window).scrollTop();
 	$( '.superpuperforms_wrapper .spfs_krzhk' ).stop().animate({ opacity: 1, top: top, left: left }, 500 );
 }
 function superpuperforms_krzhk_animate()

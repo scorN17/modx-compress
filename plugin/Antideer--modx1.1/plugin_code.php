@@ -11,8 +11,7 @@ $tb_4= 'site_templates';
 $tb_5= 'site_tmplvar_contentvalues';
 $tb_6= 'site_tmplvars';
 
-mysql_query( "
-CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_' . $tb_1 )." (
+mysql_query( "CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_'. $tb_1 )." (
   `idm` int(10) NOT NULL AUTO_INCREMENT,
   `id` int(10) NOT NULL,
   `type` varchar(20) NOT NULL DEFAULT 'document',
@@ -56,8 +55,7 @@ CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_' . $tb_1 )." (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;" );
 
 
-mysql_query( "
-CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_' . $tb_5 )." (
+mysql_query( "CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_'. $tb_5 )." (
   `idm` int(11) NOT NULL AUTO_INCREMENT,
   `id` int(11) NOT NULL,
   `tmplvarid` int(10) NOT NULL DEFAULT '0' COMMENT 'Template Variable id',
@@ -67,8 +65,7 @@ CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_' . $tb_5 )." (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;" );
 
 
-mysql_query( "
-CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_' . $tb_2 )." (
+mysql_query( "CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_'. $tb_2 )." (
   `idm` int(10) NOT NULL AUTO_INCREMENT,
   `id` int(10) NOT NULL,
   `name` varchar(50) NOT NULL DEFAULT '',
@@ -83,8 +80,7 @@ CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_' . $tb_2 )." (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;" );
 
 
-mysql_query( "
-CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_' . $tb_3 )." (
+mysql_query( "CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_'. $tb_3 )." (
   `idm` int(10) NOT NULL AUTO_INCREMENT,
   `id` int(10) NOT NULL,
   `name` varchar(50) NOT NULL DEFAULT '',
@@ -100,8 +96,7 @@ CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_' . $tb_3 )." (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;" );
 
 
-mysql_query( "
-CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_' . $tb_4 )." (
+mysql_query( "CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_'. $tb_4 )." (
   `idm` int(10) NOT NULL AUTO_INCREMENT,
   `id` int(10) NOT NULL,
   `templatename` varchar(50) NOT NULL DEFAULT '',
@@ -116,22 +111,18 @@ CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName( 'aaa_' . $tb_4 )." (
   PRIMARY KEY (`idm`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;" );
 
-
-
 $e= &$modx->Event;
 $mid= $e->params[ 'id' ];
 
-
-
 if( $e->name == "OnBeforeDocFormSave" || $e->name == "OnBeforeDocFormDelete" ) // СТРАНИЦЫ
 {
-	mysql_query( "INSERT INTO ".$modx->getFullTableName( 'aaa_' . $tb_1 )."
+	mysql_query( "INSERT INTO ".$modx->getFullTableName( 'aaa_'. $tb_1 )."
 		( `id`,`type`,`contentType`,`pagetitle`,`longtitle`,`description`,`alias`,
 		`link_attributes`,`published`,`pub_date`,`unpub_date`,`parent`,`isfolder`,`introtext`,
 		`content`,`richtext`,`template`,`menuindex`,`searchable`,`cacheable`,`createdby`,
 		`createdon`,`editedby`,`editedon`,`deleted`,`deletedon`,`deletedby`,`publishedon`,
-		`publishedby`,`menutitle`,`donthit`,`haskeywords`,`hasmetatags`,`privateweb`,`privatemgr`,`content_dispo`,`hidemenu`,`alias_visible` ) SELECT * FROM ".$modx->getFullTableName( $tb_1 )."
-		WHERE id={$mid} LIMIT 1" );
+		`publishedby`,`menutitle`,`donthit`,`haskeywords`,`hasmetatags`,`privateweb`,`privatemgr`,`content_dispo`,`hidemenu`,`alias_visible` )
+			SELECT * FROM ".$modx->getFullTableName( $tb_1 )." WHERE id={$mid} LIMIT 1" );
 	
 	$rr= mysql_query( "SELECT id FROM ".$modx->getFullTableName( $tb_6 )." ORDER BY id" );
 	
@@ -139,35 +130,24 @@ if( $e->name == "OnBeforeDocFormSave" || $e->name == "OnBeforeDocFormDelete" ) /
 	{
 		while( $row= mysql_fetch_assoc( $rr ) )
 		{
-			mysql_query( "INSERT INTO ".$modx->getFullTableName( 'aaa_' . $tb_5 )." ( `id`, `tmplvarid`, `contentid`, `value` ) SELECT * FROM ".$modx->getFullTableName( $tb_5 )." WHERE contentid={$mid} AND tmplvarid={$row[id]}" );
+			mysql_query( "INSERT INTO ".$modx->getFullTableName( 'aaa_'. $tb_5 )." ( `id`, `tmplvarid`, `contentid`, `value` )
+				SELECT * FROM ".$modx->getFullTableName( $tb_5 )." WHERE contentid={$mid} AND tmplvarid={$row[id]}" );
 		}
 	}
-	
-	
-	
 //----------------------------
 	
 }elseif( $e->name == "OnBeforeChunkFormSave" || $e->name == "OnBeforeChunkFormDelete" ){ // ЧАНКИ
-
-	mysql_query( "INSERT INTO ".$modx->getFullTableName( 'aaa_' . $tb_2 )." ( `id`, `name`, `description`, `editor_type`, `category`, `cache_type`, `snippet`, `locked` ) SELECT * FROM ".$modx->getFullTableName( $tb_2 )."
-		WHERE id={$mid} LIMIT 1" );
-	
-	
-	
+	mysql_query( "INSERT INTO ".$modx->getFullTableName( 'aaa_'. $tb_2 )." ( `id`,`name`,`description`,`editor_type`,`editor_name`,`category`,`cache_type`,`snippet`,`locked` )
+		SELECT * FROM ".$modx->getFullTableName( $tb_2 )." WHERE id={$mid} LIMIT 1" );
 //----------------------------
 	
 }elseif( $e->name == "OnBeforeSnipFormSave" || $e->name == "OnBeforeSnipFormDelete" ){ // СНИППЕТЫ
-
-	mysql_query( "INSERT INTO ".$modx->getFullTableName( 'aaa_' . $tb_3 )." ( `id`, `name`, `description`, `editor_type`, `category`, `cache_type`, `snippet`, `locked`, `properties`, `moduleguid` ) SELECT * FROM ".$modx->getFullTableName( $tb_3 )."
-		WHERE id={$mid} LIMIT 1" );
-
-	
-	
+	mysql_query( "INSERT INTO ".$modx->getFullTableName( 'aaa_'. $tb_3 )." ( `id`,`name`,`description`,`editor_type`,`category`,`cache_type`,`snippet`,`locked`,`properties`,`moduleguid` )
+		SELECT * FROM ".$modx->getFullTableName( $tb_3 )." WHERE id={$mid} LIMIT 1" );
 //----------------------------
 	
 }elseif( $e->name == "OnBeforeTempFormSave" || $e->name == "OnBeforeTempFormDelete" ){ // ШАБЛОНЫ
-
-	mysql_query( "INSERT INTO ".$modx->getFullTableName( 'aaa_' . $tb_4 )." ( `id`, `templatename`, `description`, `editor_type`, `category`, `icon`, `template_type`, `content`, `locked` ) SELECT * FROM ".$modx->getFullTableName( $tb_4 )."
-		WHERE id={$mid} LIMIT 1" );
+	mysql_query( "INSERT INTO ".$modx->getFullTableName( 'aaa_'. $tb_4 )." ( `id`,`templatename`,`description`,`editor_type`,`category`,`icon`,`template_type`,`content`,`locked`,`selectable` )
+		SELECT * FROM ".$modx->getFullTableName( $tb_4 )." WHERE id={$mid} LIMIT 1" );
 }
 ?>

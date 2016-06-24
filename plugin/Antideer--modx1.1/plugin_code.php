@@ -1,4 +1,3 @@
-<?php
 // v4
 // 24.06.2016
 // Antideer
@@ -150,4 +149,3 @@ if( $e->name == "OnBeforeDocFormSave" || $e->name == "OnBeforeDocFormDelete" ) /
 	mysql_query( "INSERT INTO ".$modx->getFullTableName( 'aaa_'. $tb_4 )." ( `id`,`templatename`,`description`,`editor_type`,`category`,`icon`,`template_type`,`content`,`locked`,`selectable` )
 		SELECT * FROM ".$modx->getFullTableName( $tb_4 )." WHERE id={$mid} LIMIT 1" );
 }
-?>

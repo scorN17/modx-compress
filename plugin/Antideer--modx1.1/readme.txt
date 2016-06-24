@@ -1,5 +1,4 @@
-// Antideer
-// Для MODx Evo 1.1
+Для MODx Evo 1.1
 
 События:
 OnBeforeChunkFormDelete

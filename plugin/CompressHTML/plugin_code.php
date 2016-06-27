@@ -17,7 +17,8 @@ if( ! isset( $_GET[ 'test' ] ) )
 		"/[\r]/" => "",
 		"/[\t]/" => "\n",
 		"/[\n]{2,}/" => "\n",
-		"/[\s]{2,}/" => " ",
+		"/[ ]{2,}/" => " ",
+		"/(\n )/" => "\n",
 	);
 
 	if( isset( $strtr[ $filetype ] ) ) $strtr_type= $strtr[ $filetype ];

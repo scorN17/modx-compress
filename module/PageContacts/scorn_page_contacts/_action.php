@@ -1,7 +1,7 @@
 <?php
-//v03
+//v04
 //PageContacts - snippet
-//17.06.2016
+//01.07.2016
 //=====================================================================================
 $sm_base= '../assets/modules/scorn_page_contacts/';
 $module_url= MODX_MANAGER_URL .'?a='. $_GET[ 'a' ] .'&id='. $_GET[ 'id' ];
@@ -101,6 +101,8 @@ if( $rr && mysql_num_rows( $rr ) > 0 )
 				<option '.( $row[ 'type' ] == 4 ? 'selected="selected"' : '' ).' value="4">Крупный текст</option>
 				<option '.( $row[ 'type' ] == 5 ? 'selected="selected"' : '' ).' value="5">Заголовок H3</option>
 				<option '.( $row[ 'type' ] == 6 ? 'selected="selected"' : '' ).' value="6">Жирный шрифт</option>
+				<option '.( $row[ 'type' ] == 7 ? 'selected="selected"' : '' ).' value="7">Изображение</option>
+				<option '.( $row[ 'type' ] == 8 ? 'selected="selected"' : '' ).' value="8">Координаты точки для карты</option>
 			</select></div>
 			
 			<div class="pci_left"><input type="text" name="left['. $row[ 'id' ] .']" value="'. $row[ 'left' ] .'" /></div>
@@ -136,7 +138,7 @@ if( $result2 != '' ) $result2 .= '<br /><br />';
 			   {
 				   while( $row= mysql_fetch_assoc( $rr ) )
 				   {
-					   print '<li class="'.( $myblock == $row['block'] ? 'active' : '' ).'"><a href="'. $module_url .'&block='. $row['block'] .'">Блок '.( $row['block']+1 ).'</a></li>';
+					   print '<li class="'.( $myblock == $row['block'] ? 'active' : '' ).'"><a href="'. $module_url .'&block='. $row['block'] .'">'.( $row['block']+1 ).'</a></li>';
 				   }
 			   }
 ?>
@@ -151,3 +153,8 @@ if( $result2 != '' ) $result2 .= '<br /><br />';
 <div style="padding:20px 0px;"><button style="font-size:20px;" type="submit" name="save">Сохранить изменения</button></div>
 </form>
 <div style="padding:20px 0px;"><a style="font-size:20px;" href="<?= $module_url ?>&act=addnewitem&block=<?= $myblock ?>">+ Добавить строку</a></div>
+
+	
+<br /><br />
+<a target="_blank" href="https://constructor.maps.yandex.ru/location-tool/">Определение координат</a>
+<br /><br />

@@ -1,7 +1,7 @@
 /*
-//v03
+//v04
 //PageContacts - snippet
-//17.06.2016
+//01.07.2016
 //=====================================================================================
 */
 .cont_1 {
@@ -16,10 +16,15 @@
 	width: 550px;
 	margin: 0px 0px 5px 0px;
 }
+.cont_img {
+	position: absolute;
+	right: 0;
+	bottom: 40px;
+}
 .cont_map {
 	position: absolute;
-	top: 0px;
-	right: 0px;
+	top: 0;
+	right: 0;
 	width: 310px;
 	z-index: 55;
 }
@@ -32,13 +37,14 @@
 .cont_block {
 	float: left;
 	width: 380px;
-	padding: 0 0 30px;
+	padding: 0 0 40px;
+	position: relative;
 }
 	.cont_block_alt {
 		float: right;
 	}
 	.cont_block .cont_1 {
-		width: 115px;
+		width: 75px;
 	}
 	.cont_block .cont_2 {
 		width: 230px;

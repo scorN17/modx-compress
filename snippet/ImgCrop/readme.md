@@ -49,3 +49,5 @@
 ```php
 array( 'filter' => IMG_FILTER_BRIGHTNESS.';5|'.IMG_FILTER_CONTRAST.';-10|'.IMG_FILTER_SMOOTH.';-20' )
 ```
+![sdf](http://april-inter.ru/tmp13.jpg)
+![sdf](http://april-inter.ru/tmp14.jpg)

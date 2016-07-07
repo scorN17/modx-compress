@@ -1,61 +1,84 @@
 <?php
-/* v.6 */
+// v7
+// 07.07.2016
+// ImgCrop
 /*
-	$img=
-	$w=
-	$h=
-	$backgr=
-	$fill=
-	$x=
-	$y=
-	$rgba=
-	$wm=
-	$filter=
-	$png=
-	$r=
-	$ellipse=
-	$dopimg=
-	$toimg=
-	$quality=
+	$img= assets/images/img.jpg
+	$w= (int)156
+	$h= (int)122
+	$backgr= 0/1
+	$fill= 0/1
+	$x= center/left/right
+	$y= center/top/bottom
+	$bgcolor= R,G,B,A / x:y / fill:(int)0
+	$wm= 0/1
+	$filter= a;b;c;d|b;c;d
+	$png= 0/1
+	$r= 0/1
+	$ellipse= max / (int)56
+	$dopimg= assets/images/dopimg.jpg
+	$toimg= assets/images/toimg.jpg
+	$quality= (int)80
 */
-//===============================================================================================================================
+//==========================================================================================
+	$ipathnotphoto= 'template/images/notphoto.png'; // БЕЗ СЛЕША В НАЧАЛЕ
+	$ipathwatermark= 'template/images/watermark.png'; // БЕЗ СЛЕША В НАЧАЛЕ // ТОЛЬКО .PNG
+
+
+
+
+
+
+
+
+
+
+
+
+
+//==========================================================================================
 	
 	$img= urldecode( $img );
-	$w= ( empty( $w ) ? 0 : $w );
-	$h= ( empty( $h ) ? 0 : $h );
+	$w= ( empty( $w ) ? 0 : intval($w) );
+	$h= ( empty( $h ) ? 0 : intval($h) );
 	$backgr= ( empty( $backgr ) ? false : $backgr );
 	$fill= ( empty( $fill ) ? false : $fill );
 	$x= ( empty( $x ) ? 'center' : $x );
 	$y= ( empty( $y ) ? 'center' : $y );
-	$rgba= ( empty( $rgba ) ? '255,255,255,127' : $rgba );
+	$bgcolor= ( empty( $bgcolor ) ? '255,255,255,127' : $bgcolor );
 	$wm= ( empty( $wm ) ? false : $wm );
 	$png= ( empty( $png ) ? false : $png );
 	$filter= ( empty( $filter ) ? -1 : $filter );
 	$refresh= ( empty( $r ) ? false : true );
-	$slash= ( substr( $img, 0, 1 ) != "/" ? true : false );
-	$root= rtrim( MODX_BASE_PATH, "/\\" ) . ( $slash ? '/' : '' );
+	$slash= ( substr( $img, 0, 1 ) != DIRECTORY_SEPARATOR ? true : false );
+	$root= rtrim( MODX_BASE_PATH, "/\\" ) . ( $slash ? DIRECTORY_SEPARATOR : '' );
 	$img= trim( $img );
+	
+	$ipathnotphoto= ( $slash ? '' : DIRECTORY_SEPARATOR ) . $ipathnotphoto;
+	$ipathwatermark= ( $slash ? '' : DIRECTORY_SEPARATOR ) . $ipathwatermark;
 
 	$quality= intval( $quality );
-	$quality= ( empty( $quality ) || $quality < 0 || $quality > 100 ? 100 : $quality );
+	$quality= ( empty($quality) || $quality < 0 || $quality > 100 ? 80 : $quality );
 
 	$ellipse= ( $ellipse == 'max' ? 'max' : intval( $ellipse ) );
-	if( $dopimg ) $dopimg= $root . ( $slash ? '' : '/' ) . urldecode( $dopimg );
-	
-	$toimg= urldecode( trim( $toimg ) );
+
+	if( $dopimg )
+	{
+		$dopimg= trim( urldecode( $dopimg ) );
+		$dopimg= ltrim( $dopimg, "/\\" );
+		$dopimg= $root . ( $slash ? '' : DIRECTORY_SEPARATOR ) . $dopimg;
+	}
 	if( $toimg )
 	{
-		if( substr( $toimg, 0, 1 ) == "/" && $slash ) $toimg= substr( $toimg, 1 );
-		if( substr( $toimg, 0, 1 ) != "/" && ! $slash ) $toimg= "/". $toimg;
+		$toimg= trim( urldecode( $toimg ) );
+		$toimg= ltrim( $toimg, "/\\" );
+		$toimg= ( $slash ? '' : DIRECTORY_SEPARATOR ) . $toimg;
 	}
-	
-	$ipathnotphoto= ( $slash ? '' : '/' ) . 'template/img/notphoto2.png';
-	$ipathwatermark= ( $slash ? '' : '/' ) . 'template/img/watermark_2.png'; // ТОЛЬКО .PNG
 	
 	if( ! file_exists( $root . $img ) || ! is_file( $root . $img ) )
 	{
 		$img= $ipathnotphoto;
-		if( $fill ){ $fill= false; $backgr= true; $rgba= '1:1'; }
+		if( $fill ){ $fill= false; $backgr= true; $bgcolor= '1:1'; }
 	}
 	if( ! file_exists( $root . $img ) || ! is_file( $root . $img ) ) return false;
 	if( $wm && ( ! file_exists( $root . $ipathwatermark ) || ! is_file( $root . $ipathwatermark ) ) )
@@ -66,19 +89,17 @@
 
 	if( ! $toimg )
 	{
-		$imgrassh= explode( ".", $img );
-		$imgrassh= $imgrassh[ count( $imgrassh )-1 ];
-		$newimg= '_th'. md5( $img . $w . $h . $backgr . $fill . $x . $y . $rgba . $wm . $filter . $ellipse . $dopimg . $quality ) . ( $png ? '.png' : '.'. $imgrassh );
+		$imgrassh= substr( $imgrassh, strrpos( $img, '.' ) );
+		$newimg= '_th'. md5( $img . $w . $h . $backgr . $fill . $x . $y . $bgcolor . $wm . $filter . $ellipse . $dopimg . $quality ) . ( $png ? '.png' : $imgrassh );
 		
-		$imgarr= explode( "/", $img );
+		$imgarr= explode( DIRECTORY_SEPARATOR, $img );
 		unset( $imgarr[ count( $imgarr )-1 ] );
 		foreach( $imgarr AS $val )
 		{
-			$newimg_dir .= $val ."/";
+			$newimg_dir .= $val . DIRECTORY_SEPARATOR;
 		}
-		$newimg_dir .= '.th/';
-		if( ! file_exists( $root . $newimg_dir ) )
-			@mkdir( $root . $newimg_dir, 0777 );
+		$newimg_dir .= '.th'. DIRECTORY_SEPARATOR;
+		if( ! file_exists( $root . $newimg_dir ) ) mkdir( $root . $newimg_dir, 0777 );
 		
 		$newimg_path= $root . $newimg_dir . $newimg;
 		$newimg_path_return= ( $fullpath ? MODX_SITE_URL : '' ) . $newimg_dir . $newimg;
@@ -87,14 +108,13 @@
 		$newimg_path= $toimg;
 		$newimg_path_return= ( $fullpath ? MODX_SITE_URL : '' ) . $toimg;
 	}
-	
 	if( ! file_exists( $newimg_path ) || filemtime( $root . $img ) > filemtime( $newimg_path ) ) $refresh= true;
 	if( filesize( $root . $img ) > 1024*1024*10 ) return $img;
 // ======================================================
 
 	if( $refresh )
 	{
-		$img1_info= @getimagesize( $root . $img );
+		$img1_info= getimagesize( $root . $img );
 		if( ! $img1_info[ 1 ] ) return false;
 		$ot= $img1_info[ 0 ] / $img1_info[ 1 ];
 		$dstW= ( $w > 0 ? $w : $img1_info[ 0 ] );
@@ -148,59 +168,80 @@
 		}
 		$crW= ( $backgr && $w > 0 ? $w : $dstW );
 		$crH= ( $backgr && $h > 0 ? $h : $dstH );
-		if( strstr( $rgba, "," ) )
+		if( strstr( $bgcolor, "," ) )
 		{
-			$rgba_arr= explode( ",", $rgba );
+			$rgba_arr= explode( ",", $bgcolor );
 			for( $kk=0; $kk<=3; $kk++ )
 			{
 				$rgba_arr[ $kk ]= intval( $rgba_arr[ $kk ] );
 				if( $kk <= 2 && ( $rgba_arr[ $kk ] < 0 || $rgba_arr[ $kk ] > 255 ) ) $rgba_arr[ $kk ]= 255;
 				if( $kk == 3 && ( $rgba_arr[ $kk ] < 0 || $rgba_arr[ $kk ] > 127 ) ) $rgba_arr[ $kk ]= 127;
 			}
-			$rgba= 'rgba';
+			$bgcolor= 'rgba';
+		}elseif( strpos( $bgcolor, 'fill:' ) === 0 ){
+			$effect= substr( $bgcolor, strpos( $bgcolor, ':' )+1 );
+			$bgcolor= 'fill';
 		}else{
-			$coord_arr= explode( ":", $rgba );
-			$rgba= 'coord';
+			$coord_arr= explode( ":", $bgcolor );
+			$bgcolor= 'coord';
 		}
 //========================================================================================
 		
-		if( $img1_info[ 2 ] == 1 ) $img1= @imagecreatefromgif( $root . $img );
+		if( $img1_info[ 2 ] == 1 ) $img1= imagecreatefromgif( $root . $img );
 			
-		elseif( $img1_info[ 2 ] == 2 ) $img1= @imagecreatefromjpeg( $root . $img );
+		elseif( $img1_info[ 2 ] == 2 ) $img1= imagecreatefromjpeg( $root . $img );
 			
 		elseif( $img1_info[ 2 ] == 3 ){
-			$img1= @imagecreatefrompng( $root . $img );
+			$img1= imagecreatefrompng( $root . $img );
 			$png= true;
 		}
 		
-		if( $rgba == 'coord' )
+		if( $bgcolor == 'coord' )
 		{
 			$col= imagecolorat( $img1, $coord_arr[ 0 ], $coord_arr[ 1 ] );
-			$rgba= imagecolorsforindex( $img1, $col );
-			$rgba_arr[ 0 ]= $rgba[ 'red' ];
-			$rgba_arr[ 1 ]= $rgba[ 'green' ];
-			$rgba_arr[ 2 ]= $rgba[ 'blue' ];
-			$rgba_arr[ 3 ]= $rgba[ 'alpha' ];
+			$bgcolor= imagecolorsforindex( $img1, $col );
+			$rgba_arr[ 0 ]= $bgcolor[ 'red' ];
+			$rgba_arr[ 1 ]= $bgcolor[ 'green' ];
+			$rgba_arr[ 2 ]= $bgcolor[ 'blue' ];
+			$rgba_arr[ 3 ]= $bgcolor[ 'alpha' ];
 		}
 		
-		$img2= @ImageCreateTrueColor( $crW, $crH );
+		$img2= ImageCreateTrueColor( $crW, $crH );
 		
 		if( $png )
 		{
-			@imagealphablending( $img2, true );
-			@imagesavealpha( $img2, true );
-			$col= @imagecolorallocatealpha( $img2, $rgba_arr[ 0 ], $rgba_arr[ 1 ], $rgba_arr[ 2 ], $rgba_arr[ 3 ] );
+			imagealphablending( $img2, true );
+			imagesavealpha( $img2, true );
+			$col= imagecolorallocatealpha( $img2, $rgba_arr[ 0 ], $rgba_arr[ 1 ], $rgba_arr[ 2 ], $rgba_arr[ 3 ] );
 		}else{
-			$col= @imagecolorallocate( $img2, $rgba_arr[ 0 ], $rgba_arr[ 1 ], $rgba_arr[ 2 ] );
+			$col= imagecolorallocate( $img2, $rgba_arr[ 0 ], $rgba_arr[ 1 ], $rgba_arr[ 2 ] );
 		}
 		
-		@imagefill( $img2, 0,0, $col );
-		@imagecopyresampled( $img2, $img1, $dstX, $dstY, $srcX, $srcY, $dstW, $dstH, $srcW, $srcH );
+		if( $bgcolor == 'fill' )
+		{
+			imagecopyresampled( $img2, $img1, 0, 0, 0, 0, $crW, $crH, $img1_info[0], $img1_info[1] );
+			$effect= explode( '|', $effect );
+			if( ! empty( $effect ) )
+			{
+				foreach( $effect AS $row )
+				{
+					$tmp= explode( ';', $row );
+					if( $tmp[ 0 ] == 2 || $tmp[ 0 ] == 3 || $tmp[ 0 ] == 10 ) imagefilter( $img2, $tmp[ 0 ], $tmp[ 1 ] );
+					elseif( $tmp[ 0 ] == 4 ) imagefilter( $img2, $tmp[ 0 ], $tmp[ 1 ], $tmp[ 2 ], $tmp[ 3 ], $tmp[ 4 ] );
+					elseif( $tmp[ 0 ] == 11 ) imagefilter( $img2, $tmp[ 0 ], $tmp[ 1 ], $tmp[ 2 ] );
+					else imagefilter( $img2, $tmp[ 0 ] );
+				}
+			}
+		}else{
+			imagefill( $img2, 0,0, $col );
+		}
+		
+		imagecopyresampled( $img2, $img1, $dstX, $dstY, $srcX, $srcY, $dstW, $dstH, $srcW, $srcH );
 		
 		if( $wm )
 		{
-			$wm_info= @getimagesize( $root . $ipathwatermark );
-			$img3= @imagecreatefrompng( $root . $ipathwatermark );
+			$wm_info= getimagesize( $root . $ipathwatermark );
+			$img3= imagecreatefrompng( $root . $ipathwatermark );
 			$wm_ot= $wm_info[ 0 ] / $wm_info[ 1 ];
 			$wmW= $wm_info[ 0 ];
 			$wmH= $wm_info[ 1 ];
@@ -216,8 +257,8 @@
 			}
 			$wmX= round( ( $crW - $wmW ) / 2 );
 			$wmY= round( ( $crH - $wmH ) / 2 );
-			@imagecopyresampled( $img2, $img3, $wmX, $wmY, 0, 0, $wmW, $wmH, $wm_info[ 0 ], $wm_info[ 1 ] );
-			@imagedestroy( $img3 );
+			imagecopyresampled( $img2, $img3, $wmX, $wmY, 0, 0, $wmW, $wmH, $wm_info[ 0 ], $wm_info[ 1 ] );
+			imagedestroy( $img3 );
 		}
 		
 		$filter= explode( '|', $filter );
@@ -281,24 +322,24 @@
 			}
 			imagealphablending( $img2, true );
 			imagesavealpha( $img2, true );
-			$dopimg_info= @getimagesize( $dopimg );
-			$img3= @imagecreatefrompng( $dopimg );
+			$dopimg_info= getimagesize( $dopimg );
+			$img3= imagecreatefrompng( $dopimg );
 			$diX= round( ( $crW - $dopimg_info[ 0 ] ) / 2 ) + ( $dopimg_xy[ 0 ] ? intval( $dopimg_xy[ 0 ] ) : 0 );
 			$diY= round( ( $crH - $dopimg_info[ 1 ] ) / 2 ) + ( $dopimg_xy[ 1 ] ? intval( $dopimg_xy[ 1 ] ) : 0 );
-			@imagecopyresampled( $img2, $img3, $diX, $diY, 0, 0, $dopimg_info[ 0 ], $dopimg_info[ 1 ], $dopimg_info[ 0 ], $dopimg_info[ 1 ] );
-			@imagedestroy( $img3 );
+			imagecopyresampled( $img2, $img3, $diX, $diY, 0, 0, $dopimg_info[ 0 ], $dopimg_info[ 1 ], $dopimg_info[ 0 ], $dopimg_info[ 1 ] );
+			imagedestroy( $img3 );
 		}
 		
 		if( $png ){
-			@imagepng( $img2, $newimg_path );
+			imagepng( $img2, $newimg_path );
 		}elseif( $img1_info[ 2 ] == 1 ){
-			@imagegif( $img2, $newimg_path, $quality );
+			imagegif( $img2, $newimg_path, $quality );
 		}elseif( $img1_info[ 2 ] == 2 ){
-			@imagejpeg( $img2, $newimg_path, $quality );
+			imagejpeg( $img2, $newimg_path, $quality );
 		}
-		@chmod( $newimg_path, 0777 );
-		@imagedestroy( $img1 );
-		@imagedestroy( $img2 );
+		chmod( $newimg_path, 0777 );
+		imagedestroy( $img1 );
+		imagedestroy( $img2 );
 	}
 
 	return $newimg_path_return;

@@ -11,21 +11,34 @@
 ![sdf](http://april-inter.ru/tmp1.jpg)
 ![sdf](http://april-inter.ru/tmp2.jpg)
 ![sdf](http://april-inter.ru/tmp3.jpg)
+
 - Можно задать фон полей (цвет, цвет точки в исх.картинке или сама картинка (с применением фильтров)
+
 ![sdf](http://april-inter.ru/tmp4.jpg)
 ![sdf](http://april-inter.ru/tmp5.jpg)
 ![sdf](http://april-inter.ru/tmp6.jpg)
+
 - Наложение водяного знака
+
 ![sdf](http://april-inter.ru/tmp7.jpg)
+
 - Применение графических фильтров
+
 ![sdf](http://april-inter.ru/tmp8.jpg)
+
 - Округление картинки
+
 ![sdf](http://april-inter.ru/tmp9.jpg)
 ![sdf](http://april-inter.ru/tmp10.jpg)
+
 - Наложение дополнительной картинки
+
 ![sdf](http://april-inter.ru/tmp11.jpg)
+
 - Сохранение в определенный файл
+
 - Изменение качества картинки на выходе
+
 ![sdf](http://april-inter.ru/tmp12.jpg)
 
 ###В будущих версиях

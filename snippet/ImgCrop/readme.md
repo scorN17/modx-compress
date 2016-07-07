@@ -45,7 +45,7 @@
 - Путь к картинке для фона
 
 ####Запомнить
-
+- Делает картинку красивой:
 ```php
 array( 'filter' => IMG_FILTER_BRIGHTNESS.';5|'.IMG_FILTER_CONTRAST.';-10|'.IMG_FILTER_SMOOTH.';-20' )
 ```

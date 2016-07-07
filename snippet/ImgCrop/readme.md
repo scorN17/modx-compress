@@ -1,5 +1,5 @@
-h1 ImgCrop
-# h3 fdsgfdg
+#ImgCrop
+###fdsgfdg
 
 Создаете сниппет с именем "ImgCrop00" (желательно с номером версии)
 Пихаем код.

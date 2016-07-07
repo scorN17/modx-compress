@@ -10,7 +10,7 @@
 	$fill= 0/1
 	$x= center/left/right
 	$y= center/top/bottom
-	$bgcolor= R,G,B,A / x:y / fill:(int)0
+	$bgcolor= R,G,B,A / x:y / fill:a;b;c;d|b;c;d
 	$wm= 0/1
 	$filter= a;b;c;d|b;c;d
 	$png= 0/1

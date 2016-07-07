@@ -7,6 +7,7 @@
 
 ###Возможности
 - Кроп картинки с сохранением пропорций. Вписывание в прямоугольник (с полями и без) и заполнение прямоугольника.
+
 ![sdf](http://april-inter.ru/tmp1.jpg)
 ![sdf](http://april-inter.ru/tmp2.jpg)
 ![sdf](http://april-inter.ru/tmp3.jpg)

@@ -16,8 +16,8 @@
 - Изменение качества картинки на выходе
 
 ###В будущих версиях
-`- Путь к картинке для фона`
+- Путь к картинке для фона
 
 ####Запомнить
 
-array( 'filter' => IMG_FILTER_BRIGHTNESS.';5|'.IMG_FILTER_CONTRAST.';-10|'.IMG_FILTER_SMOOTH.';-20' )
+```array( 'filter' => IMG_FILTER_BRIGHTNESS.';5|'.IMG_FILTER_CONTRAST.';-10|'.IMG_FILTER_SMOOTH.';-20' )```

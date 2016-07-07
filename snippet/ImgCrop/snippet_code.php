@@ -16,7 +16,9 @@
 	$png= 0/1
 	$r= 0/1
 	$ellipse= max / (int)56
+	$degstep= (int)5
 	$dopimg= assets/images/dopimg.jpg
+	$dopimg_xy= x:y
 	$toimg= assets/images/toimg.jpg
 	$quality= (int)80
 */

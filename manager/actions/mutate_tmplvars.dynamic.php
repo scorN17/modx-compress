@@ -348,8 +348,9 @@ function decode(s){
                     <option value="email" <?php     echo ($content['type']=='email')? "selected='selected'":""; ?>>Email</option>
                     <option value="number" <?php    echo ($content['type']=='number')? "selected='selected'":""; ?>>Number</option>
                     <option value="date" <?php      echo ($content['type']=='date')? "selected='selected'":""; ?>>Date</option>
-					<option value="params-multiple" <?php     echo ($content['type']=='params-multiple')? "selected='selected'":""; ?>>Parameters (Multiple)</option><!--scorn v003-->
-					<option value="images-multiple" <?php     echo ($content['type']=='images-multiple')? "selected='selected'":""; ?>>Images (Multiple)</option><!--scorn v003-->
+					
+					<option value="params-multiple" <?php     echo ($content['type']=='params-multiple')? "selected='selected'":""; ?>>Parameters (Multiple)</option><!--scorn v005-->
+					<option value="images-multiple" <?php     echo ($content['type']=='images-multiple')? "selected='selected'":""; ?>>Images (Multiple)</option><!--scorn v005-->
                 </optgroup>
                 <optgroup label="Custom Type">
                     <option value="custom_tv" <?php  echo ($content['type']=='custom_tv')? "selected='selected'":""; ?>>Custom Input</option>

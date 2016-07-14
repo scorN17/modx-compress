@@ -1,7 +1,7 @@
 <?php
-//v04
-//PageContacts - snippet
-//01.07.2016
+//v045
+//PageContacts
+//07.07.2016
 //=====================================================================================
 $sm_base= '../assets/modules/scorn_page_contacts/';
 $module_url= MODX_MANAGER_URL .'?a='. $_GET[ 'a' ] .'&id='. $_GET[ 'id' ];

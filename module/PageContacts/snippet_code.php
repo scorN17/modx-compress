@@ -1,20 +1,33 @@
 <?php
-//v04
+//v045
 //PageContacts - snippet
-//01.07.2016
+//07.07.2016
 //=====================================================================================
-$rr= mysql_query( "SELECT * FROM ".$modx->getFullTableName( 'page_contacts' )." ORDER BY block, `index`" );
+if( $blocks )
+{
+	$blocks_qq= "";
+	$blocks= explode( ',', $blocks );
+	foreach( $blocks AS $row )
+	{
+		$blocks_qq .= ( ! empty( $blocks_qq ) ? " OR " : "" ) ."block=". intval($row);
+	}
+}
+$rr= mysql_query( "SELECT * FROM ".$modx->getFullTableName( 'page_contacts' )." ".( $blocks_qq ? "WHERE ".$blocks_qq : "" )." ORDER BY block, `index`" );
 if( $rr && mysql_num_rows( $rr ) > 0 )
 {
 	$block= 0;
+	$ii= 0;
 	while( $row= mysql_fetch_assoc( $rr ) )
 	{
 		if( $row[ 'block' ] && $row[ 'block' ] != $block )
 		{
+			if( $onlymain ) break;
+			
+			$ii++;
+			if( $block ) $print .= '</div>'; // закрываем предыдущий BLOCK
 			$block= $row[ 'block' ];
-			$print .= '</div>'; // закрываем предыдущий BLOCK
-			if( $block%2!=0 ) $print .= '<div class="clr">&nbsp;</div>';
-			$print .= '<div class="cont_block cont_block_'. $block .' '.( $block%2==0 ? 'cont_block_alt' : '' ).'">'; // открываем новый BLOCK
+			if( $ii%2!=0 ) $print .= '<div class="clr">&nbsp;</div>';
+			$print .= '<div class="cont_block cont_block_'. $block .' '.( $ii%2==0 ? 'cont_block_alt' : '' ).'">'; // открываем новый BLOCK
 		}
 		
 		if( $onlyblock && ! $block ) continue;
@@ -47,7 +60,7 @@ if( $rr && mysql_num_rows( $rr ) > 0 )
 			if( $row[ 'br' ] == '1' ) $print .= '<br /><br />';
 		}
 	}
-	$print .= '</div><div class="clr">&nbsp;</div>'; // закрываем последний BLOCK
+	if( $block ) $print .= '</div><div class="clr">&nbsp;</div>'; // закрываем последний BLOCK
 }
 if( $array ) return $result_array;
 return $print;

@@ -1,6 +1,6 @@
 <?php
-// v7
-// 07.07.2016
+// v71
+// 14.07.2016
 // ImgCrop
 /*
 	$img= assets/images/img.jpg
@@ -91,7 +91,7 @@
 
 	if( ! $toimg )
 	{
-		$imgrassh= substr( $imgrassh, strrpos( $img, '.' ) );
+		$imgrassh= substr( $img, strrpos( $img, '.' ) );
 		$newimg= '_th'. md5( $img . $w . $h . $backgr . $fill . $x . $y . $bgcolor . $wm . $filter . $ellipse . $dopimg . $quality ) . ( $png ? '.png' : $imgrassh );
 		
 		$imgarr= explode( DIRECTORY_SEPARATOR, $img );

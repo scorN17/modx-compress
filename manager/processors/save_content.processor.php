@@ -222,7 +222,7 @@ while ($row = $modx->db->getRow($rs)) {
 		
 		
 		case 'params-multiple': // scorn
-		//v003
+		//v005
 			$tmplvar_arr_prnm= $_POST["tv".$row['id']."prnm"];
 			$tmplvar_arr_prval= $_POST["tv".$row['id']."prval"];
 			if( ! empty( $tmplvar_arr_prnm ) )
@@ -240,7 +240,7 @@ while ($row = $modx->db->getRow($rs)) {
 		
 		
 		case 'images-multiple': // scorn
-		//v003
+		//v005
 			$tmplvar_arr_climg= $_POST["tv".$row['id']."climg"];
 			if( ! empty( $tmplvar_arr_climg ) )
 			{

@@ -40,7 +40,7 @@ if( $rr && mysql_num_rows( $rr ) > 0 )
 		
 		if( $row[ 'type' ] == 7 )
 		{
-			$print .= '<div class="cont_img"><a class="highslide" onclick="return hs.expand(this)" href="'. $row[ 'right' ] .'"><img src="'.$modx->runSnippet( 'ImgCrop6', array( 'img'=>$row[ 'right' ], 'w'=>90, 'h'=>90, 'fill'=>true, 'ellipse'=>'max', 'degstep'=>15, 'dopimg'=>'template/images/kruzhok1.png', 'dopimg_xy'=>'0:0' ) ).'" /></a></div>';
+			$print .= '<div class="cont_img"><a class="highslide" onclick="return hs.expand(this)" href="'. $row[ 'right' ] .'"><img src="'.$modx->runSnippet( 'ImgCrop6', array( 'img'=>$row[ 'right' ], 'w'=>90, 'h'=>90, 'fill'=>true, 'ellipse'=>'max', 'degstep'=>15, 'dopimg'=>'template/images/kruzhok1.png', 'dopimg_xy'=>'0:0' ) ).'" alt="" /></a></div>';
 			
 		}elseif( $row[ 'type' ] == 8 ){
 			

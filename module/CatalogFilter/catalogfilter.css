@@ -1,0 +1,118 @@
+
+
+.blockfilter {
+	padding: 15px 0 0;
+}
+	.blockfilter .blf_tit {
+		font-size: 22px;
+		padding: 0px 0px 20px 15px;
+	}
+	
+	.blockfilter .blf_prm {
+		padding: 10px 15px;
+		border-bottom: 1px solid #ddd;
+	}
+		.blockfilter .blf_prm .blfp_tit {
+			padding: 0 0 5px 0;
+/*			cursor: pointer;*/
+		}
+			.blockfilter .blf_prm .blfp_tit .nm {
+				text-transform: uppercase;
+				letter-spacing: 1px;
+				font-weight: 700;
+				font-size: 14px;
+			}
+				.blockfilter .blf_prm .blfp_tit .nm span {
+					text-transform: none;
+				}
+			.blockfilter .blf_prm .blfp_tit .famicon {
+				color: #000;
+				display: none;
+			}
+				.blockfilter .blf_prm .blfp_tit .famicon:before {
+					content: "\f105";
+				}
+		.blockfilter .blf_prm .blfp_itms {
+		}
+		.blockfilter .open .blfp_itms {
+			display: block;
+		}
+			.blockfilter .blf_prm .blfp_itms .blfp_itm {
+				padding: 0px 0px 4px 32px;
+				cursor:pointer;
+				background: url( "../img/filtr1.png" ) left 3px no-repeat;
+				font-size:18px
+			}
+				.blockfilter .blf_prm .blfp_itms .blfp_itm:hover {
+					background-position: left -42px;
+				}
+				.blockfilter .blf_prm .blfp_itms .blfp_itm_active {
+					background-position: left -175px;
+				}
+					.blockfilter .blf_prm .blfp_itms .blfp_itm_active:hover {
+						background-position: left -175px;
+					}
+
+
+					
+					
+		.blockfilter .blfp_button {
+			background: #25aae2;
+			color: #fff;
+			width: 100%;
+			padding: 7px 0;
+			border: none;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			font-weight: bold;
+		}
+			.blockfilter .blfp_button:hover {
+				background: #0088c1;
+			}
+		
+		.blockfilter .blf_prm .blfp_itms .blfp_cena {
+			width: 110px;
+			padding: 0 0 5px;
+		}
+			.blockfilter .blf_prm .blfp_itms .blfp_cena .blfp_cena_tit {
+				
+			}
+			.blockfilter .blf_prm .blfp_itms .blfp_cena .blfp_cena_val {
+				
+			}
+				.blockfilter .blf_prm .blfp_itms .blfp_cena .blfp_cena_val input {
+					width: 100%;
+					padding: 2px;
+					text-align: center;
+					font-size: 16px;
+				}
+		.blockfilter .blf_prm .blfp_itms .blfp_cenaot {
+			float: left;
+		}
+		.blockfilter .blf_prm .blfp_itms .blfp_cenado {
+			float: right;
+		}
+
+
+		.blockfilter .blf_prm .blfp_itms .blfp_znach {
+			width: 110px;
+			padding: 0 0 5px;
+		}
+			.blockfilter .blf_prm .blfp_itms .blfp_znach .blfp_znach_tit {
+				
+			}
+			.blockfilter .blf_prm .blfp_itms .blfp_znach .blfp_znach_val {
+				
+			}
+				.blockfilter .blf_prm .blfp_itms .blfp_znach .blfp_znach_val input {
+					width: 100%;
+					padding: 2px;
+					text-align: center;
+					font-size: 16px;
+				}
+		.blockfilter .blf_prm .blfp_itms .blfp_znachot {
+			float: left;
+		}
+		.blockfilter .blf_prm .blfp_itms .blfp_znachdo {
+			float: right;
+		}

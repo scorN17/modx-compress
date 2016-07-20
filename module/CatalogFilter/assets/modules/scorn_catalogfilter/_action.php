@@ -3,6 +3,46 @@
 $sm_base= '../assets/modules/scorn_catalogfilter/';
 $module_url= MODX_MANAGER_URL .'?a='. $_GET[ 'a' ] .'&id='. $_GET[ 'id' ];
 
+
+// =======================================================================
+mysql_query("CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName('_cat_filter')." (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `ed` varchar(32) CHARACTER SET utf8 NOT NULL,
+  `type` tinyint(4) NOT NULL,
+  `docs` text CHARACTER SET utf8 NOT NULL,
+  `ii` tinyint(4) NOT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;");
+mysql_query("CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName('_cat_filter_value')." (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `idfilter` int(11) NOT NULL,
+  `iddoc` int(11) NOT NULL,
+  `value` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `dopvalue` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `enabled` set('y','n') CHARACTER SET utf8 NOT NULL DEFAULT 'y',
+  PRIMARY KEY (`id`),
+  KEY `idfilter` (`idfilter`),
+  KEY `iddoc` (`iddoc`)
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;");
+mysql_query("CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName('_cat_filter_values_cache')." (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `catid` int(11) NOT NULL,
+  `docid` int(11) NOT NULL,
+  `cfid` int(11) NOT NULL,
+  `cfvid` int(11) NOT NULL,
+  `value` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `enabled` set('y','n') CHARACTER SET utf8 NOT NULL DEFAULT 'y',
+  `dt` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `catid` (`catid`),
+  KEY `cfid` (`cfid`),
+  KEY `docid` (`docid`),
+  KEY `cfvid` (`cfvid`)
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;");
+// =======================================================================
+
 $catalog_koren= 17;
 
 

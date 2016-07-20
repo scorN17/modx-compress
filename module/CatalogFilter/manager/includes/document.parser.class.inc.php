@@ -19,8 +19,9 @@ class DocumentParser {
     var $debug;
     var $documentIdentifier;
 	
-    var $realDocumentIdentifier; //scorn
-    var $catalogFilterListX; //scorn
+    var $realDocumentIdentifier; //scorn v10
+    var $catalogFilterListX; //scorn v10
+    var $catalogPageNum; //scorn v10
 	
     var $documentMethod;
     var $documentGenerated;
@@ -121,26 +122,22 @@ class DocumentParser {
         	return call_user_func_array(array($this->old,$method_name),$arguments);
     }
 
+
 //============================================================================================================
-	//scorn
-	
-	function SC__clearAlias( $alias )
+	//scorn v10
+	function SCORN__aliasDopParams( $alias )
 	{
-		preg_match( "/(.*)\/x\/(.*)\/\$/", $alias, $res );
-		$dopalias= $res[ 2 ];
-		$alias_base= str_replace( 'x/'.$res[ 2 ].'/', "", $alias );
-		//print_r( $res );
-		return array( $alias, $alias_base, $dopalias );
+		$alias_without_params= $alias;
+		preg_match( "/\/page_([0-9]{1,})\/$/", $alias_without_params, $res );
+		$page_num= $res[ 1 ];
+		$alias_without_params= str_replace( '/page_'. $page_num, '', $alias_without_params );
+		preg_match( "/(.*)\/(x\/(.*)\/)$/", $alias_without_params, $res );
+		$dop_params= $res[ 3 ];
+		$alias_without_params= str_replace( $res[ 2 ], '', $alias_without_params );
+		return array( $alias, $alias_without_params, $dop_params, $page_num );
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 //============================================================================================================
+
 
 	function checkSQLconnect($connector = 'db'){
 		$flag = false;
@@ -1485,8 +1482,9 @@ class DocumentParser {
 	
 	function sendStrictURI(){
         // FIX URLs
-		
-		if( $this->catalogFilterListX ) return; //scorn
+        
+			if( $this->catalogFilterListX ) return; //scorn v10
+			if( $this->catalogPageNum ) return; //scorn v10
 		
         if (empty($this->documentIdentifier) || $this->config['seostrict']=='0' || $this->config['friendly_urls']=='0')
          	return;
@@ -1764,10 +1762,11 @@ class DocumentParser {
             $this->documentMethod= $this->getDocumentMethod();
             $this->documentIdentifier= $this->getDocumentIdentifier($this->documentMethod);
 			
-            $aliases= $this->SC__clearAlias($this->documentIdentifier); //scorn
-            $this->realDocumentIdentifier= $aliases[ 0 ]; //scorn
-            $this->catalogFilterListX= $aliases[ 2 ]; //scorn
-            $this->documentIdentifier= $aliases[ 1 ]; //scorn
+            $aliases= $this->SCORN__aliasDopParams($this->documentIdentifier); //scorn v10
+            $this->realDocumentIdentifier= $aliases[ 0 ]; //scorn v10
+            $this->catalogFilterListX= $aliases[ 2 ]; //scorn v10
+            $this->catalogPageNum= $aliases[ 3 ]; //scorn v10
+            $this->documentIdentifier= $aliases[ 1 ]; //scorn v10
         }
 
         if ($this->documentMethod == "none") {

@@ -253,6 +253,20 @@ while ($row = $modx->db->getRow($rs)) {
 		break;
 		
 		
+		case 'files-multiple': // scorn
+		//v005
+			$tmplvar_arr_clfile= $_POST["tv".$row['id']."clfile"];
+			if( ! empty( $tmplvar_arr_clfile ) )
+			{
+				foreach( $tmplvar_arr_clfile AS $key => $val )
+				{
+					$val= str_replace( "||", "", trim( $val ) );
+					if( ! empty( $val ) ) $tmplvar .= ( ! empty( $tmplvar ) ? '||' : '' ) . $val;
+				}
+			}
+		break;
+		
+		
 		default:
 			if (is_array($_POST["tv" . $row['id']])) {
 				// handles checkboxes & multiple selects elements

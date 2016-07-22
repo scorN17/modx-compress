@@ -210,6 +210,52 @@
 				
 				
 				
+			case "files-multiple":	// scorn
+			//v005
+				$field_value_arr= explode( "||", $field_value );
+				if( $field_value_arr )
+				{
+					foreach( $field_value_arr AS $key => $row )
+					{
+						$rowa= explode( "::", $row );
+						$field_html .= '<div><input type="text" id="tv'. $field_id .'_'. $key .'" name="tv'. $field_id .'clfile[]"  value="'. $rowa[0] .'" '. $field_style .' onchange="documentDirty=true;" />&nbsp;<input type="button" value="'. $_lang['insert'] .'" onclick="BrowseFileServer( \'tv'. $field_id .'_'. $key .'\' )" />&nbsp;&nbsp;<input type="button" value="-" onclick="scornFileRemove'. $field_id .'( this )" /></div>';
+					}
+				}
+				
+				$field_html .= '<input type="button" value="+" onclick="scornFileAdd'. $field_id .'( this )" data-cc="'. ( count( $field_value_arr ) - 1 ) .'" />';
+				
+				$field_html .= "
+					<script type=\"text/javascript\" src=\"//yastatic.net/jquery/2.1.4/jquery.min.js\"></script>
+					<script type=\"text/javascript\" src=\"//yastatic.net/jquery-ui/1.11.2/jquery-ui.min.js\"></script>
+					<script type=\"text/javascript\">
+						/* <![CDATA[ */
+							var \$v= jQuery.noConflict();
+							function scornFileRemove". $field_id ."( ctrl )
+							{
+								\$v( ctrl ).parent().remove();
+							}
+							function scornFileAdd". $field_id ."( ctrl )
+							{
+								var cc= \$v( ctrl ).data( 'cc' ) + 1;
+								\$v( ctrl ).data( 'cc', cc );
+								\$v( '<div><input type=\"text\" id=\"tv". $field_id ."_'+ cc +'\" name=\"tv". $field_id ."clfile[]\" ". $field_style ." onchange=\"documentDirty=true;\">&nbsp;<input type=\"button\" value=\"". $_lang['insert'] ."\" onclick=\"BrowseFileServer( \\'tv". $field_id ."_'+ cc +'\\' )\" />&nbsp;&nbsp;<input type=\"button\" value=\"-\" onclick=\"scornFileRemove". $field_id ."( this )\" /></div>' ).insertBefore( ctrl );
+							}
+							function OpenServerBrowser(url, width, height ) {
+								var iLeft = (screen.width  - width) / 2 ;
+								var iTop  = (screen.height - height) / 2 ;
+								var sOptions = 'toolbar=no,status=no,resizable=yes,dependent=yes' ;
+								sOptions += ',width=' + width ;
+								sOptions += ',height=' + height ;
+								sOptions += ',left=' + iLeft ;
+								sOptions += ',top=' + iTop ;
+								var oWindow = window.open( url, 'FCKBrowseWindow', sOptions ) ;
+							}
+						/* ]]> */
+					</script>";
+				break;
+				
+				
+				
 				case "image":	// handles image fields using htmlarea image manager
 					global $_lang;
 					global $ResourceManagerLoaded;

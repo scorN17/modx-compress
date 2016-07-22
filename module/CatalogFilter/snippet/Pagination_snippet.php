@@ -11,7 +11,7 @@ if( $docs_items_count > 0 )
 		$pages .= '<div class="catalog_pages">';
 		
 		$pp_prev= $active_page - 1; if( $pp_prev <= 1 ) $pp_prev= 0;
-		if( $pp_prev ) $pages .= '<a class="cp_item" href="'. $modx->makeUrl( $myid ) . ( $filterprms ? 'x/'.$filterprms.'/' : '' ) .'page_'. $pp_prev .'/"> < </a>';
+		if( $pp_prev ) $pages .= '<a class="cp_item" href="'. $modx->makeUrl( $myid ) . ( $filterpr ? 'x/'.$filterpr.'/' : '' ) .'page_'. $pp_prev .'/"> < </a>';
 		
 		$visible_ot= $active_page - 5; if( $visible_ot < 1 ) $visible_ot= 1;
 		$visible_do= $active_page + 5; if( $visible_do > $pages_count ) $visible_do= $pages_count;

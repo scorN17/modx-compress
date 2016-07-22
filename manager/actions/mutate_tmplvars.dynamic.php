@@ -351,6 +351,7 @@ function decode(s){
 					
 					<option value="params-multiple" <?php     echo ($content['type']=='params-multiple')? "selected='selected'":""; ?>>Parameters (Multiple)</option><!--scorn v005-->
 					<option value="images-multiple" <?php     echo ($content['type']=='images-multiple')? "selected='selected'":""; ?>>Images (Multiple)</option><!--scorn v005-->
+					<option value="files-multiple" <?php     echo ($content['type']=='files-multiple')? "selected='selected'":""; ?>>Files (Multiple)</option><!--scorn v005-->
                 </optgroup>
                 <optgroup label="Custom Type">
                     <option value="custom_tv" <?php  echo ($content['type']=='custom_tv')? "selected='selected'":""; ?>>Custom Input</option>

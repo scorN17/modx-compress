@@ -96,7 +96,7 @@ function get_filter_params()
 			param_val= $( this ).data( 'val' );
 			if( $( this ).data( 'sel' ) != 'da' ) param_val= '';
 		}
-		if( param_val != '' )
+		if( param_val !== '' )
 		{
 			if( ! prmcc[ param ] ) prmcc[ param ]= 0;
 			prmcc[ param ]++;

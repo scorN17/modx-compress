@@ -37,11 +37,11 @@ if( $docs_items_count > 0 )
 				continue 1;
 			}
 				
-			$pages .= '<a class="cp_item '.( $pp == $active_page ? 'active' : '' ).'" href="'. $modx->makeUrl( $myid ) . ( $filterprms ? 'x/'.$filterprms.'/' : '' ) . ( $pp > 1 ? 'page_'. $pp .'/' : '' ) .'">'. $pp .'</a>';
+			$pages .= '<a class="cp_item '.( $pp == $active_page ? 'active' : '' ).'" href="'. $modx->makeUrl( $myid ) . ( $filterpr ? 'x/'.$filterpr.'/' : '' ) . ( $pp > 1 ? 'page_'. $pp .'/' : '' ) .'">'. $pp .'</a>';
 		}
 		
 		$pp_next= $active_page + 1; if( $pp_next >= $pages_count ) $pp_next= 0;
-		if( $pp_next ) $pages .= '<a class="cp_item" href="'. $modx->makeUrl( $myid ) . ( $filterprms ? 'x/'.$filterprms.'/' : '' ) .'page_'. $pp_next .'/"> > </a>';
+		if( $pp_next ) $pages .= '<a class="cp_item" href="'. $modx->makeUrl( $myid ) . ( $filterpr ? 'x/'.$filterpr.'/' : '' ) .'page_'. $pp_next .'/"> > </a>';
 		
 		$pages .= '<div class="clr">&nbsp;</div>';
 		$pages .= '</div>';

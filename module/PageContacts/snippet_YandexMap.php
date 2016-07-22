@@ -15,7 +15,7 @@ function init(){
             zoom: 11,
         }
     );
-	
+	yandexmap.behaviors.disable('scrollZoom');
 	yandexmap.geoObjects
 	<?php
 foreach( $points AS $row )

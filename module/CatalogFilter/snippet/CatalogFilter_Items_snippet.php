@@ -152,6 +152,7 @@ if( $filterpr )
 			}
 		}
 		
+		$ids_prices= array();
 		$rr= mysql_query( "SELECT contentid FROM ".$modx->getFullTableName( 'site_tmplvar_contentvalues' )."
 						WHERE tmplvarid={$tv_price} AND ROUND(`value`)>='".$price_vals[0]."' ".( $price_vals[1] ? "AND ROUND(`value`)<='".$price_vals[1]."'" : "" )."" );
 		if( $rr && mysql_num_rows( $rr ) > 0 )

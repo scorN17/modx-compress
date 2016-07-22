@@ -85,6 +85,14 @@ if( $doc[ 'isfolder' ] == 1 )
 }
 
 
+if( $type != 'content' && $page == 1 )
+{
+	$print .= '<div class="clr">&nbsp;</div>';
+	$print .= '<div class="category_content">'. $content .'</div>';
+	$print .= '<div class="clr">&nbsp;</div>';
+}
+
+
 if( $type != 'content' ) $print .= '<div id="ajax_content">';
 
 
@@ -118,14 +126,6 @@ if( ! empty( $items ) )
 	$print .= ( $pages ? '<br /><br />' : '' ) . $pages;
 }
 $print .= '</div>';
-
-
-if( $type != 'content' )
-{
-	$print .= '<div class="clr">&nbsp;</div>';
-	$print .= '<div class="category_content">'. $content .'</div>';
-	$print .= '<div class="clr">&nbsp;</div>';
-}
 
 
 if( $type != 'content' ) $print .= '</div>';

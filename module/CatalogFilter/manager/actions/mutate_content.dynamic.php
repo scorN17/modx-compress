@@ -775,14 +775,14 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
 		{
 			if( true || $id > 0 )
 			{
-				$docs= $modx->runSnippet( 'GetDoc5', array( 'ids' => ( $content[ 'isfolder' ] ? $id : $content[ 'parent' ] ), 'type' => 'childs', 'isf' => '0' ) );
+				/*$docs= $modx->runSnippet( 'GetDoc6', array( 'ids' => ( $content[ 'isfolder' ] ? $id : $content[ 'parent' ] ), 'type' => 'childs', 'isf' => '0' ) );
 				if( $docs )
 				{
 					foreach( $docs AS $row2 )
 					{
 						//$docsqq .= ( ! empty( $docsqq ) ? ' OR ' : '' ) . "iddoc={$row2[id]}";
 					}
-				}
+				}*/
 				if( true || $docsqq )
 				{
 					$rr= $modx->db->select(
@@ -837,14 +837,14 @@ $page=isset($_REQUEST['page'])?(int)$_REQUEST['page']:'';
 					}
 					print '</select>';
 					
-					if( $row[ 'type' ] == 3 ) print '<input type="checkbox" id="doptv_'. $row[ 'id' ] .'_'. $row2[ 'id' ] .'" name="doptv'. $row[ 'id' ] .'_'. $row2[ 'id' ] .'_del" value="del" tvtype="checkbox" onchange="documentDirty=true;" />- удалить';
+					if( $row[ 'type' ] == 3 || $row[ 'type' ] == 5 ) print '<input type="checkbox" id="doptv_'. $row[ 'id' ] .'_'. $row2[ 'id' ] .'" name="doptv'. $row[ 'id' ] .'_'. $row2[ 'id' ] .'_del" value="del" tvtype="checkbox" onchange="documentDirty=true;" />- удалить';
 					
 					print '</div>';
 				}
 			}
-			if( ( ! $limit2 && $row[ 'type' ] != 3 ) || $row[ 'type' ] == 3 )
+			if( ( ! $limit2 && $row[ 'type' ] != 3 && $row[ 'type' ] != 5 ) || ( $row[ 'type' ] == 3 || $row[ 'type' ] == 5 ) )
 			{
-				for( $kk=1; $kk<=( $row[ 'type' ] == 3 ? 5 : 1 ); $kk++ )
+				for( $kk=1; $kk<=( $row[ 'type' ] == 3 || $row[ 'type' ] == 5 ? 5 : 1 ); $kk++ )
 				{
 					print '<div style="padding:0px 0px 2px 0px;">';
 					print '<input type="text" id="doptv'. $row[ 'id' ] .'_x'. $kk .'_tx" name="doptv'. $row[ 'id' ] .'_x'. $kk .'_tx" value="'. $row2[ 'value' ] .'" tvtype="text" onchange="documentDirty=true;" style="width:200px;" />';

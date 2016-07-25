@@ -363,12 +363,6 @@ switch ($actionToTake) {
 // SCORN
 if( true )
 {
-/*$rs= $modx->db->select(
-	"cf.*, cfv.value, cfv.dopvalue",
-	$modx->getFullTableName( '_cat_filter' ) ." AS cf
-		LEFT JOIN ". $modx->getFullTableName( '_cat_filter_value' ) ." AS cfv ON cfv.idfilter=cf.id AND cfv.iddoc='{$key}'",
-	"( docs LIKE '%,{$key},%' OR docs LIKE '%,{$parent},%' ) AND cf.type!=2 AND enabled=1"
-);*/
 $parentslist= $modx->runSnippet( 'GetIdOnLvl', array( 'id'=>$key, 'koren'=>0 ) );
 if( $parentslist ) foreach( $parentslist AS $row ) if( $row[ 'id' ] ) $qq .= ( ! empty( $qq ) ? " OR " : "" ) ."cf.docs LIKE '%,{$row[id]},%'";
 if( $qq ) $rs= $modx->db->select(
@@ -383,11 +377,11 @@ if( $limit > 0 )
 	{
 		if( ! isset( $_POST[ "doptv". $row[ 'id' ] .'_x1_tx' ] ) ) continue 1;
 		
-		for( $kk=1; $kk<=( $row[ 'type' ] == 3 ? 5 : 1 ); $kk++ )
+		for( $kk=1; $kk<=( $row[ 'type' ] == 3 || $row[ 'type' ] == 5 ? 5 : 1 ); $kk++ )
 		{
 			$doptmplvar= $modx->db->escape( trim( $_POST[ "doptv". $row[ 'id' ] .'_x'. $kk .'_tx' ] ) );
 			$doptmplvar2= $modx->db->escape( trim( $_POST[ "doptv". $row[ 'id' ] .'_x'. $kk .'_tx2' ] ) );
-			if( $row[ 'type' ] == 3 )
+			if( $row[ 'type' ] == 3 || $row[ 'type' ] == 5 )
 			{
 				if( $doptmplvar || $doptmplvar2 )
 					$modx->db->insert( array( 'idfilter' => $row[ 'id' ], 'iddoc' => $key, 'value' => $doptmplvar, 'dopvalue' => $doptmplvar2 ), $modx->getFullTableName( '_cat_filter_value' ) );
@@ -604,12 +598,6 @@ if( $limit > 0 )
 // SCORN
 if( true )
 {
-/*$rs= $modx->db->select(
-	"cf.*, cfv.value, cfv.dopvalue",
-	$modx->getFullTableName( '_cat_filter' ) ." AS cf
-		LEFT JOIN ". $modx->getFullTableName( '_cat_filter_value' ) ." AS cfv ON cfv.idfilter=cf.id AND cfv.iddoc='{$id}'",
-	"( docs LIKE '%,{$id},%' OR docs LIKE '%,{$parent},%' ) AND cf.type!=2 AND enabled=1"
-);*/
 $parentslist= $modx->runSnippet( 'GetIdOnLvl', array( 'id'=>$id, 'koren'=>0 ) );
 if( $parentslist ) foreach( $parentslist AS $row ) if( $row[ 'id' ] ) $qq .= ( ! empty( $qq ) ? " OR " : "" ) ."cf.docs LIKE '%,{$row[id]},%'";
 if( $qq ) $rs= $modx->db->select(
@@ -646,11 +634,11 @@ if( $limit > 0 )
 		
 		if( ! isset( $_POST[ "doptv". $row[ 'id' ] .'_x1_tx' ] ) ) continue 1;
 		
-		for( $kk=1; $kk<=( $row[ 'type' ] == 3 ? 5 : 1 ); $kk++ )
+		for( $kk=1; $kk<=( $row[ 'type' ] == 3 || $row[ 'type' ] == 5 ? 5 : 1 ); $kk++ )
 		{
 			$doptmplvar= $modx->db->escape( trim( $_POST[ "doptv". $row[ 'id' ] .'_x'. $kk .'_tx' ] ) );
 			$doptmplvar2= $modx->db->escape( trim( $_POST[ "doptv". $row[ 'id' ] .'_x'. $kk .'_tx2' ] ) );
-			if( $row[ 'type' ] == 3 )
+			if( $row[ 'type' ] == 3 || $row[ 'type' ] == 5 )
 			{
 				if( $doptmplvar || $doptmplvar2 )
 					$modx->db->insert( array( 'idfilter' => $row[ 'id' ], 'iddoc' => $id, 'value' => $doptmplvar, 'dopvalue' => $doptmplvar2 ), $modx->getFullTableName( '_cat_filter_value' ) );

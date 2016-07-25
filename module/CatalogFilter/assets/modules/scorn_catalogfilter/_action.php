@@ -305,6 +305,7 @@ $(document).ready(function(){
 					<option '.( $prop[ 'type' ] == 3 ? 'selected' : '' ).' value="3">Несколько значений</option>
 					<option '.( $prop[ 'type' ] == 2 ? 'selected' : '' ).' value="2">Цена от до</option>
 					<option '.( $prop[ 'type' ] == 4 ? 'selected' : '' ).' value="4">Значение от до</option>
+					<option '.( $prop[ 'type' ] == 5 ? 'selected' : '' ).' value="5">Для корзины</option>
 				</select><br /><br />
 				<input type="submit" value="Сохранить" /> &nbsp;
 				<a style="color:#1f69c6;" href="'. $module_url .'&act=edit&propid='. $prop[ 'id' ] .'">Изменить привязки »</a> &nbsp; &nbsp;

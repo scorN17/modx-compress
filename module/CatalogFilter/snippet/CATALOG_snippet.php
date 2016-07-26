@@ -30,7 +30,7 @@ if( $filterpr )
 //$print .= print_r( $filter_ids, 1 );
 
 
-$page= intval( $_GET[ 'p' ] );
+$page= intval( $modx->catalogPageNum );
 if( $page > 1 && $page < 1000 ){}else{ $page= 1; }
 $page_s= ( $page - 1 ) * $MaxItemsInPage;
 

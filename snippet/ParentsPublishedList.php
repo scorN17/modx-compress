@@ -1,5 +1,6 @@
 <?php
 //v001
+//ParentsPublishedList
 //====================================================================
 $flag= false;
 $doc= $modx->getDocument( $id, 'id,parent' );

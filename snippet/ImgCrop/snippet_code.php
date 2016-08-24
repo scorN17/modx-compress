@@ -1,6 +1,6 @@
 <?php
 // v7.1
-// 14.07.2016
+// 24.08.2016
 // ImgCrop
 /*
 	$img= assets/images/img.jpg
@@ -59,8 +59,9 @@
 	$ipathnotphoto= ( $slash ? '' : DIRECTORY_SEPARATOR ) . $ipathnotphoto;
 	$ipathwatermark= ( $slash ? '' : DIRECTORY_SEPARATOR ) . $ipathwatermark;
 
-	$quality= intval( $quality );
-	$quality= ( empty($quality) || $quality < 0 || $quality > 100 ? 80 : $quality );
+	$quality= intval($quality);
+	if($quality === 0) $quality= ($_GET['ww']<=800?60:($_GET['ww']<=1000?80:100));
+		else $quality= ($quality<0 || $quality>100 ? 80 : $quality);
 
 	$ellipse= ( $ellipse == 'max' ? 'max' : intval( $ellipse ) );
 

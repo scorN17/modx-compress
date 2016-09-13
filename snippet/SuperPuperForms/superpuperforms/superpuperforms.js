@@ -1,6 +1,7 @@
 /*
 //SuperPuperForms
-//v003
+//v004
+//13.09.2016
 */
 (function($){ //var $= jQuery.noConflict();
 
@@ -23,20 +24,42 @@ $(window).load(function(){
 	setTimeout( 'superpuperforms_krzhk_animate()', 3000 );
 	setTimeout( 'superpuperforms_krzhk_animate_2()', 6000 );
 	
-	$( '.superpuperforms_wrapper .spfs_submit' ).each(function(){
-		if( ! $( this ).hasClass( 'spfs_submit_click' ) )
+	$('.superpuperforms_wrapper .spfs_submit').each(function(){
+		if( ! $(this).hasClass('spfs_submit_click'))
 		{
-			$( this ).addClass( 'spfs_submit_click' );
-			$( this ).click(function(){
-				var formelem= $( this ).parent().parent().parent();
-				$.post( $( 'form', formelem ).attr( 'action' ) +"?ajax&act=superpuperforms_send",
-					$( 'form', formelem ).serialize() ).done(function(data){
-						var result= $.parseJSON( data );
-						$( '.spfs_result', formelem ).show().removeClass( 'spfs_result_error' ).removeClass( 'spfs_result_ok' ).addClass( 'spfs_result_'+ result.result ).html( result.text );
-						if( result.result == 'ok' ) $( 'form', formelem ).remove();
-							else{ }
-					});
-				return;
+			var formelem= $(this).parent().parent().parent();
+
+			$(this).addClass('spfs_submit_click');
+
+			if($('input[type="file"]',formelem).length)
+			{
+				$('input[type="file"]',formelem).fileupload({
+					url: $('form',formelem).attr('action')+"?ajax&act=superpuperforms_send"
+			        ,dataType: 'json'
+					,autoUpload: false
+				}).on('fileuploadadd',function(e,data){
+					$('.spfs_submit',formelem).addClass('fileuploader');
+					$('.spfs_submit',formelem).data(data);
+				}).on('fileuploaddone',function(e,data){
+					var result= data.result;
+					$('.spfs_result',formelem).show().removeClass('spfs_result_error').removeClass('spfs_result_ok').addClass('spfs_result_'+result.result).html(result.text);
+					if(result.result=='ok') $('form',formelem).remove(); else{}
+				});
+			}
+
+			$(this).click(function(){
+				var elem= $(this).parent().parent().parent();
+				if($('input[type="file"]',elem).length && $(this).hasClass('fileuploader'))
+				{
+					$(this).data().submit();
+				}else{
+					$.post($('form',elem).attr('action')+"?ajax&act=superpuperforms_send", $('form',elem).serialize()).done(function(data){
+							var result= $.parseJSON(data);
+							$('.spfs_result',elem).show().removeClass('spfs_result_error').removeClass('spfs_result_ok').addClass('spfs_result_'+result.result).html(result.text);
+							if(result.result=='ok') $('form',elem).remove(); else{}
+						});
+					return;
+				}
 			});
 		}
 	});

@@ -1,6 +1,7 @@
 <?php
 //SuperPuperForms
-//v003
+//v004
+//13.09.2016
 //===============================================================================
 /*
 &form=`2`
@@ -17,6 +18,7 @@
 //
 //===============================================================================
 $js= 'superpuperforms/superpuperforms.js'; // Путь к файлу JS
+$js2= 'superpuperforms/jquery.fileupload.js'; // Путь к файлу jquery.fileupload.js
 $css= 'superpuperforms/superpuperforms.css'; // Путь к файлу CSS
 $telefonchik__flag= false; // Прыгающий телефончик
 $veriword__flag[ 1 ]= false; // Captcha 1-й формы
@@ -84,6 +86,30 @@ if( $_GET[ 'act' ] == 'superpuperforms_send' )
 	$spfs_text= addslashes( trim( $_POST[ 'spfs_text' ] ) );
 	$spfs_text2= str_replace( "\r\n", "<br />", $spfs_text );
 	
+	$spfs_file= $_FILES['spfs_file'];
+	if($spfs_file['tmp_name'])
+	{
+		if(is_uploaded_file($spfs_file['tmp_name']))
+		{
+			if(true || $spfs_file['type']=='application/x-zip-compressed')
+			{
+				if($spfs_file['size'] < 1024*1024*10) //10 Мб
+				{
+					$ip= $_SERVER['REMOTE_ADDR'];
+					$folder= 'assets/images/superpuperforms/'.$ip.'/';
+					$rassh= substr($spfs_file['name'],strrpos($spfs_file['name'],'.'));
+					srand(time());
+					$file= md5($spfs_file['name'].rand(10,99)).$rassh;
+					if( ! file_exists(MODX_BASE_PATH.$folder)) mkdir(MODX_BASE_PATH.$folder, 0777, true);
+					if(move_uploaded_file($spfs_file['tmp_name'], MODX_BASE_PATH.$folder.$file))
+					{
+						$fileflag= true;
+					}
+				}
+			}
+		}
+	}
+	
 	if( $veriword__flag[ $spfs_formid ] && $_POST[ 'spfs_veriword' ] != $_SESSION[ 'DMTCaptcha' ][ 'superpuperforms_'.$spfs_formid ] )
 	{
 		$result= '{"result":"error","text":"Введен неверный текст с картинки!"}';
@@ -105,6 +131,8 @@ if( $_GET[ 'act' ] == 'superpuperforms_send' )
 		if( $spfs_phone ) $message .= '<p><b>Контактный телефон:</b> '. $spfs_phone .'</p>';
 		
 		if( $spfs_kogda ) $message .= '<p><b>Когда позвонить?</b> '. $spfs_kogda .'</p>';
+		
+		if( $fileflag ) $message .= '<p><a href="http://'.$_SERVER['HTTP_HOST'].'/'.$folder.$file.'">Файл</a></p>';
 		
 		$message .= '<p><b>Дата и время сообщения:</b> '. date( 'd.m.Y - H:i' ) .'</p>';
 		
@@ -161,6 +189,7 @@ if( $_GET[ 'act' ] == 'superpuperforms_send' )
 ?>
 <link rel="stylesheet" type="text/css" href="<?= $css ?>" />
 <script type="text/javascript" src="<?= $js ?>"></script>
+<script type="text/javascript" src="<?= $js2 ?>"></script>
 <script type="text/javascript">
 (function($){$(document).ready(function(){
 <?php
@@ -196,6 +225,9 @@ if( $_GET[ 'act' ] == 'superpuperforms_send' )
 				<div class="clr">&nbsp;</div>
 				<div class="spfs_label">Номер телефона:<div class="zvd">*</div></div><div class="spfs_input"><input class="form_elem" type="text" name="spfs_phone" /></div>
 				<div class="clr">&nbsp;</div>
+				
+				<!-- input type="file" name="spfs_file" / -->
+				
 				<div class="spfs_label">Сообщение:</div><div class="spfs_input">
 					<textarea class="form_elem" name="spfs_text"><?php print $mail_text;?></textarea>
 				</div>

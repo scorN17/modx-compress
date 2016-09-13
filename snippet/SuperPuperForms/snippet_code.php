@@ -23,6 +23,7 @@ $css= 'superpuperforms/superpuperforms.css'; // Путь к файлу CSS
 $telefonchik__flag= false; // Прыгающий телефончик
 $veriword__flag[ 1 ]= false; // Captcha 1-й формы
 $veriword__flag[ 2 ]= false; // Captcha 2-й формы
+$filetypes= '/.png/.jpg/.jpeg/.gif/';
 //===============================================================================
 //smtp//mail//default//
 $mailtype= 'mail';
@@ -89,29 +90,32 @@ if( $_GET[ 'act' ] == 'superpuperforms_send' )
 	$spfs_file= $_FILES['spfs_file'];
 	if($spfs_file['tmp_name'])
 	{
+		$photoflag= true;
+		$photoflag_error= true;
 		if(is_uploaded_file($spfs_file['tmp_name']))
 		{
-			if(true || $spfs_file['type']=='application/x-zip-compressed')
+			$rassh= substr($spfs_file['name'],strrpos($spfs_file['name'],'.'));
+			if(strpos($filetypes,'/'.$rassh.'/')!==false || $spfs_file['type']=='application/x-zip-compressed')
 			{
 				if($spfs_file['size'] < 1024*1024*10) //10 Мб
 				{
 					$ip= $_SERVER['REMOTE_ADDR'];
 					$folder= 'assets/images/superpuperforms/'.$ip.'/';
-					$rassh= substr($spfs_file['name'],strrpos($spfs_file['name'],'.'));
 					srand(time());
 					$file= md5($spfs_file['name'].rand(10,99)).$rassh;
 					if( ! file_exists(MODX_BASE_PATH.$folder)) mkdir(MODX_BASE_PATH.$folder, 0777, true);
 					if(move_uploaded_file($spfs_file['tmp_name'], MODX_BASE_PATH.$folder.$file))
 					{
-						$fileflag= true;
-					}
-				}
-			}
-		}
+						$photoflag_error= false;
+					}else $result= '{"result":"error","text":"Ошибка загрузки файла! 002"}';
+				}else $result= '{"result":"error","text":"Слишком большой файл! Больше 10Мб."}';
+			}else $result= '{"result":"error","text":"Неверное расширение файла!"}';
+		}else $result= '{"result":"error","text":"Ошибка загрузки файла! 001"}';
 	}
 	
-	if( $veriword__flag[ $spfs_formid ] && $_POST[ 'spfs_veriword' ] != $_SESSION[ 'DMTCaptcha' ][ 'superpuperforms_'.$spfs_formid ] )
+	if($result)
 	{
+	}elseif( $veriword__flag[ $spfs_formid ] && $_POST[ 'spfs_veriword' ] != $_SESSION[ 'DMTCaptcha' ][ 'superpuperforms_'.$spfs_formid ] ){
 		$result= '{"result":"error","text":"Введен неверный текст с картинки!"}';
 	}elseif( ! $spfs_email && ! $spfs_phone ){
 		$result= '{"result":"error","text":"Необходимо указать контактные данные!"}';

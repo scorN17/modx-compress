@@ -1,6 +1,6 @@
 <?php
-// v7.1
-// 24.08.2016
+// v7.2
+// 15.09.2016
 // ImgCrop
 /*
 	$img= assets/images/img.jpg
@@ -23,21 +23,8 @@
 	$quality= (int)80
 */
 //==========================================================================================
-	$ipathnotphoto= 'template/images/notphoto.png'; // БЕЗ СЛЕША В НАЧАЛЕ
+	$ipathnotphoto= 'template/images/nophoto.png'; // БЕЗ СЛЕША В НАЧАЛЕ
 	$ipathwatermark= 'template/images/watermark.png'; // БЕЗ СЛЕША В НАЧАЛЕ // ТОЛЬКО .PNG
-
-
-
-
-
-
-
-
-
-
-
-
-
 //==========================================================================================
 	
 	$img= urldecode( $img );
@@ -55,21 +42,20 @@
 	$slash= ( substr( $img, 0, 1 ) != DIRECTORY_SEPARATOR ? true : false );
 	$root= rtrim( MODX_BASE_PATH, "/\\" ) . ( $slash ? DIRECTORY_SEPARATOR : '' );
 	$img= trim( $img );
-	
+	$base= rtrim( MODX_BASE_URL, "/\\" );
+	if(strpos($img,$base)===($slash?1:0)) $img= substr($img,($slash?1:0)+strlen($base));
+
 	$ipathnotphoto= ( $slash ? '' : DIRECTORY_SEPARATOR ) . $ipathnotphoto;
 	$ipathwatermark= ( $slash ? '' : DIRECTORY_SEPARATOR ) . $ipathwatermark;
-
 	$quality= intval($quality);
 	if($quality === 0) $quality= ($_GET['ww']<=800?60:($_GET['ww']<=1000?80:100));
 		else $quality= ($quality<0 || $quality>100 ? 80 : $quality);
-
 	$ellipse= ( $ellipse == 'max' ? 'max' : intval( $ellipse ) );
-
 	if( $dopimg )
 	{
 		$dopimg= trim( urldecode( $dopimg ) );
 		$dopimg= ltrim( $dopimg, "/\\" );
-		$dopimg= $root . ( $slash ? '' : DIRECTORY_SEPARATOR ) . $dopimg;
+		$dopimg= $root . $dopimg;
 	}
 	if( $toimg )
 	{
@@ -77,7 +63,7 @@
 		$toimg= ltrim( $toimg, "/\\" );
 		$toimg= ( $slash ? '' : DIRECTORY_SEPARATOR ) . $toimg;
 	}
-	
+
 	if( ! file_exists( $root . $img ) || ! is_file( $root . $img ) )
 	{
 		$img= $ipathnotphoto;
@@ -89,7 +75,6 @@
 		$wm= false;
 		$img= $ipathnotphoto;
 	}
-
 	if( ! $toimg )
 	{
 		$imgrassh= substr( $img, strrpos( $img, '.' ) );
@@ -105,7 +90,7 @@
 		if( ! file_exists( $root . $newimg_dir ) ) mkdir( $root . $newimg_dir, 0777 );
 		
 		$newimg_path= $root . $newimg_dir . $newimg;
-		$newimg_path_return= ( $fullpath ? MODX_SITE_URL : '' ) . $newimg_dir . $newimg;
+		$newimg_path_return= ( $fullpath ? MODX_SITE_URL : ( $slash ? DIRECTORY_SEPARATOR : '' ) ) . $newimg_dir . $newimg;
 		
 	}else{
 		$newimg_path= $toimg;
@@ -114,7 +99,6 @@
 	if( ! file_exists( $newimg_path ) || filemtime( $root . $img ) > filemtime( $newimg_path ) ) $refresh= true;
 	if( filesize( $root . $img ) > 1024*1024*10 ) return $img;
 // ======================================================
-
 	if( $refresh )
 	{
 		$img1_info= getimagesize( $root . $img );
@@ -344,6 +328,5 @@
 		imagedestroy( $img1 );
 		imagedestroy( $img2 );
 	}
-
 	return $newimg_path_return;
 ?>

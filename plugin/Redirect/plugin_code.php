@@ -1,6 +1,6 @@
 //Redirect
-//15.09.2016
-//v10
+//16.09.2016
+//v10.1
 //Events: OnWebPageInit, OnWebPagePrerender
 //-----------------------------------------------------------------
 $redirect= array(
@@ -19,7 +19,10 @@ $redirect= array(
 //
 //
 //-----------------------------------------------------------------
+$base= rtrim(MODX_BASE_URL,DIRECTORY_SEPARATOR);
+if($base=='/') $base= '';
 $url= $_SERVER['REQUEST_URI'];
+if($base) $url= str_replace($base, '', $url);
 $url2= false;
 if($redirect[1][$url])
 {
@@ -57,6 +60,6 @@ if($redirect[1][$url])
 if($url2)
 {
 	header('HTTP/1.1 301 Moved Permanently');
-	header('location: '.$url2);
+	header('location: '.$base.$url2);
 	exit();
 }

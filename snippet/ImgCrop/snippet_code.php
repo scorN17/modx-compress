@@ -57,7 +57,7 @@ $base= ltrim(MODX_BASE_URL, DIRECTORY_SEPARATOR);
 $img= trim(urldecode($img));
 $slashflag= (strpos($img, DIRECTORY_SEPARATOR)===0 ? true : false);
 if($slashflag) $img= ltrim($img, DIRECTORY_SEPARATOR);
-$baseflag= (strpos($img, $base)===0 ? true : false);
+$baseflag= ($base && strpos($img, $base)===0 ? true : false);
 if($baseflag) $img= ltrim($img, $base);
 $root= MODX_BASE_PATH;
 if($dopimg)

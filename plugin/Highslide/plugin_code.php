@@ -17,7 +17,7 @@ if(true || isset($_GET['test']))
 			if(strpos($result[2][$key], 'fill') !== false || strpos($result[3][$key], 'fill') !== false) $fill= true; else $fill= false;
 			if(strpos($result[2][$key], 'backgr') !== false || strpos($result[3][$key], 'backgr') !== false) $backgr= true; else $backgr= false;
 			preg_match_all('/src="(.*)"/imU', $row, $src);
-			$img= $modx->runSnippet('ImgCrop71', array('img'=>$src[1][0]));
+			$img= $modx->runSnippet('ImgCrop72', array('img'=>$src[1][0]));
 			$img_mini= $modx->runSnippet('ImgCrop72', array('img'=>$src[1][0], 'w'=>300, 'h'=>200, 'backgr'=>$backgr, 'fill'=>$fill));
 			$row2= str_replace( $src[ 1 ][ 0 ], $img_mini, $row );
 			$row2= preg_replace("/(width|height)=\"(.*)\"/imU", "", $row2);

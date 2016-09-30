@@ -42,7 +42,14 @@ if($e->name=='OnSiteRefresh')
 		if($rr && mysql_num_rows($rr)>0)
 		{
 			while($row= mysql_fetch_assoc($rr))
-				if( ! isset($list[$row['id']])) $errors[2][$row['id']]= true; //Элемент выпал из дерева ресурсов
+			{
+				if( ! isset($list[$row['id']]))
+				{
+					//mysql_query("DELETE FROM bogem_site_content WHERE id={$row[id]} LIMIT 1");
+					//mysql_query("DELETE FROM bogem_site_tmplvar_contentvalues WHERE contentid={$row[id]}");
+					$errors[2][$row['id']]= true; //Элемент выпал из дерева ресурсов
+				}
+			}
 		}
 	}
 	if(is_array($errors[1]) && count($errors[1]))
@@ -50,5 +57,5 @@ if($e->name=='OnSiteRefresh')
 	if(is_array($errors[2]) && count($errors[2]))
 		$pp .= '<p><b>Элемент выпал из дерева ресурсов</b></p><pre>'.print_r($errors[2],1).'</pre>';
 	
-	//mysql_query("UPDATE bogem_site_content SET content='==".addslashes($pp)."' WHERE id=0000000000000 LIMIT 1");
+	//mysql_query("UPDATE bogem_site_content SET content='==".addslashes($pp)."' WHERE id=19 LIMIT 1");
 }

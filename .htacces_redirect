@@ -1,0 +1,4 @@
+# Редирект с HTTP на HTTPS
+    RewriteCond %{SERVER_PORT} !^443$
+    RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+# end

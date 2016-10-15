@@ -1,5 +1,5 @@
 <?php
-$varsion= 'v11';
+$version= 'v11';
 //18.06.2016
 //Compress
 /*	&compress=true/false

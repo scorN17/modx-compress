@@ -48,7 +48,7 @@ if( true )
 		$filetype= substr( $file, strrpos( $file, '.' ) );
 		$file_to= substr( $file, 0, strrpos( $file, '.' ) ) .'.compress'. $filetype;
 		$filesarray[]= $file;
-		if( ! file_exists( $root . $file_to ) || filemtime( $root . $file ) > filemtime( $root . $file_to ) ) $refresh= true;
+		if( ! file_exists( $root . $file_to ) || filectime( $root . $file ) > filectime( $root . $file_to ) ) $refresh= true;
 	}else{
 		$filetype= substr( $files, strrpos( $files, '.' ) );
 		$file_to= ( $tofile ? $tofile : 'all.compress'.$filetype );
@@ -60,14 +60,14 @@ if( true )
 			{
 				$filepath= trim( $row1 );
 				$filesarray[]= $filepath;
-				if( ! file_exists( $root . $file_to ) || filemtime( $root . $filepath ) > filemtime( $root . $file_to ) ) $refresh= true;
+				if( ! file_exists( $root . $file_to ) || filectime( $root . $filepath ) > filectime( $root . $file_to ) ) $refresh= true;
 			}else{
 				$tmp3= explode( ',', $tmp2[ 1 ] );
 				foreach( $tmp3 AS $row3 )
 				{
 					$filepath= $tmp2[ 0 ] . trim( $row3 );
 					$filesarray[]= $tmp2[ 0 ] . trim( $row3 );
-					if( ! file_exists( $root . $file_to ) || filemtime( $root . $filepath ) > filemtime( $root . $file_to ) ) $refresh= true;
+					if( ! file_exists( $root . $file_to ) || filectime( $root . $filepath ) > filectime( $root . $file_to ) ) $refresh= true;
 				}
 			}
 		}

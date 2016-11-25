@@ -93,7 +93,7 @@ if( ! $toimg)
 	$newimg_path= $root.$toimg;
 	$newimg_path_return= ($fullpath ? MODX_SITE_URL : ($slashflag?DIRECTORY_SEPARATOR:'').($baseflag?$base:'')) .$toimg;
 }
-if( ! file_exists($newimg_path) || filemtime($root.$img) > filemtime($newimg_path)) $refresh= true;
+if( ! file_exists($newimg_path) || filectime($root.$img) > filectime($newimg_path)) $refresh= true;
 if(filesize($root.$img) > 1024*1024*10) return $img;
 //--------------------------------------------------------------------------------------
 

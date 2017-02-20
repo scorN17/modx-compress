@@ -1,5 +1,5 @@
 <?php
-//v02
+//v03
 //GenerAlias
 //==================================================================================
 $trans = array("а"=>"a", "б"=>"b", "в"=>"v", "г"=>"g", "д"=>"d", "е"=>"e",
@@ -16,6 +16,7 @@ $trans = array("а"=>"a", "б"=>"b", "в"=>"v", "г"=>"g", "д"=>"d", "е"=>"e",
 	$alias= addslashes( $txt );
 	$alias= strip_tags( strtr( $alias, $trans ) );
 	$alias= preg_replace( '/&.+?;/', '', $alias );
+	$alias= strtolower($alias);
 	$alias= preg_replace( "/[^a-zA-Z0-9-]/", "", $alias );
 	$alias= preg_replace( '/([-]){2,}/', '\1', $alias );
 	$alias= trim( $alias, '-' );

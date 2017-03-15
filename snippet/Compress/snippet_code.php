@@ -1,6 +1,6 @@
 <?php
-$version= 'v14';
-//14.03.2017
+$version= 'v15';
+//15.03.2017
 //Compress
 /*	&compress=true/false
 	&file - компрессит в filename.compress.css один файл
@@ -44,36 +44,35 @@ $pregreplace['.js'][1]= array(
 //============================================================================
 if(true)
 {
-	$slash= ( substr( ( $file ? $file : $files ), 0, 1 ) == "/" ? false : true );
+	if($file) $files= $file;
+	$slash= ( substr( $files, 0, 1 ) == "/" ? false : true );
 	$root .= $slash ? '/' : '';
-	if( $file )
+	if($files)
 	{
-		if( ! file_exists($root.$file)) return;
-		$filetype= substr( $file, strrpos( $file, '.' ) );
-		$file_to= substr( $file, 0, strrpos( $file, '.' ) ) .'.compress'. $filetype;
-		$filesarray[]= $file;
-		if( ! file_exists( $root . $file_to ) || filectime( $root . $file ) > filectime( $root . $file_to ) ) $refresh= true;
-	}else{
 		$filetype= substr( $files, strrpos( $files, '.' ) );
-		$file_to= ( $tofile ? $tofile : 'all.compress'.$filetype );
+		$file_to= $tofile;
+		if( ! $file_to) $file_to= substr( $file, 0, strrpos( $file, '.' ) ) .'.compress'. $filetype;
 		$tmp1= explode( ';', $files );
-		foreach( $tmp1 AS $row1 )
+		if(is_array($tmp1) && count($tmp1))
 		{
-			$tmp2= explode( ':', trim( $row1 ) );
-			if( count( $tmp2 ) == 1 )
+			foreach( $tmp1 AS $row1 )
 			{
-				if( ! file_exists($root.$filepath)) continue;
-				$filepath= trim( $row1 );
-				$filesarray[]= $filepath;
-				if( ! file_exists( $root . $file_to ) || filectime( $root . $filepath ) > filectime( $root . $file_to ) ) $refresh= true;
-			}else{
-				$tmp3= explode( ',', $tmp2[ 1 ] );
-				foreach( $tmp3 AS $row3 )
+				$tmp2= explode( ':', trim( $row1 ) );
+				if( count( $tmp2 ) == 1 )
 				{
+					$filepath= trim( $row1 );
 					if( ! file_exists($root.$filepath)) continue;
-					$filepath= $tmp2[ 0 ] . trim( $row3 );
-					$filesarray[]= $tmp2[ 0 ] . trim( $row3 );
+					$filesarray[]= $filepath;
 					if( ! file_exists( $root . $file_to ) || filectime( $root . $filepath ) > filectime( $root . $file_to ) ) $refresh= true;
+				}else{
+					$tmp3= explode( ',', $tmp2[ 1 ] );
+					foreach( $tmp3 AS $row3 )
+					{
+						$filepath= $tmp2[ 0 ] . trim( $row3 );
+						if( ! file_exists($root.$filepath)) continue;
+						$filesarray[]= $filepath;
+						if( ! file_exists( $root . $file_to ) || filectime( $root . $filepath ) > filectime( $root . $file_to ) ) $refresh= true;
+					}
 				}
 			}
 		}
@@ -89,7 +88,7 @@ if( $refresh && is_array($filesarray) && count($filesarray) )
 	$size_before= 0;
 	$file_to_handle= fopen( $root . $file_to, 'w' );	
 	if( ! $file_to_handle) return;
-	if( $files ) fwrite( $file_to_handle, "/*{$files}*/\n\n" );
+	if( ! $file ) fwrite( $file_to_handle, "/*{$files}*/\n\n" );
 	foreach( $filesarray AS $filerow ) $size_before += filesize( $root . $filerow );
 	foreach( $filesarray AS $filerow )
 	{

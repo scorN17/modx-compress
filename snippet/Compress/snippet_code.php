@@ -1,10 +1,9 @@
 <?php
-$version= 'v15';
-//15.03.2017
+$version= 'v16';
+//30.03.2017
 //Compress
 /*	&compress=true/false
-	&file - компрессит в filename.compress.css один файл
-	&files - компрессит в all.compress.css все указанные файлы
+	&files - компрессит в &tofile все указанные файлы
 	&tofile - файл, в который комперссить все указанные файлы
 	&print=false/true - выводить код, а не путь к файлу
 	&r=false/true - принудительно пересоздает компресс-файлы
@@ -51,7 +50,7 @@ if(true)
 	{
 		$filetype= substr( $files, strrpos( $files, '.' ) );
 		$file_to= $tofile;
-		if( ! $file_to) $file_to= substr( $file, 0, strrpos( $file, '.' ) ) .'.compress'. $filetype;
+		if( ! $file_to) $file_to= substr( $files, 0, strrpos( $files, '.' ) ) .'.compress'. $filetype;
 		$tmp1= explode( ';', $files );
 		if(is_array($tmp1) && count($tmp1))
 		{

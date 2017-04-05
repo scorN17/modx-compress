@@ -1,5 +1,5 @@
 
-Для MODx Evo 1.1
+Для MODx Evo 1.xx
 
 События:
 OnBeforeChunkFormDelete

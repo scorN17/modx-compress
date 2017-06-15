@@ -1,91 +1,75 @@
 <?php
-//v03
-//============================================================================
-
-
-
-$myid= $modx->documentIdentifier;
-if( empty( $id ) ) $id= $myid;
-
-
-$page= intval( $_GET[ 'p' ] );
-
-
+$id= $modx->documentIdentifier;
 
 $propsvalues= array();
-$cats= $modx->runSnippet( 'GetDoc6', array( 'ids'=>$id, 'type'=>'all', 'isf'=>'1' ) );
-if( $cats )
+
+$cats= $modx->runSnippet('DocLister',array('api'=>true, 'idType'=>'parents', 'parents'=>$id, 'selectFields'=>'id', 'depth'=>5, 'showParent'=>'1', 'addWhereList'=>"c.isfolder='1'"));
+$cats= json_decode($cats, true);
+if(is_array($cats) && count($cats))
 {
-	foreach( $cats AS $row )
-	{
-		$catsqq .= ( ! empty( $catsqq ) ? ' OR ' : '' ) . "catid={$row[id]}";
-	}
+	foreach($cats AS $row) $catsqq .= ( ! empty($catsqq) ? ' OR ' : '') ."folderid={$row[id]}";
 }
-if( $catsqq )
+if($catsqq)
 {
-	$rr= mysql_query( "SELECT * FROM ". $modx->getFullTableName( '_cat_filter_values_cache' ) ." WHERE ( {$catsqq} ) AND enabled='y' GROUP BY cfid, `value` ORDER BY cfid, `value`" );
-	if( $rr && mysql_num_rows( $rr ) > 0 )
+	$rr= $modx->db->query("SELECT * FROM ".$modx->getFullTableName('_catfilter_value_cache')." WHERE ( {$catsqq} ) AND e='y' GROUP BY cf_id, `value` ORDER BY cf_id, `value`");
+	if($rr && $modx->db->getRecordCount($rr))
 	{
-		while( $row= mysql_fetch_assoc( $rr ) )
+		while($row= $modx->db->getRow($rr))
 		{
-			$propsvalues[ $row[ 'cfid' ] ][]= $row;
+			$propsvalues[$row['cf_id'] ][]= $row;
 		}
 	}
 }
 
 
-
-
-
-$docs= $modx->runSnippet( 'GetDoc6', array( 'ids'=>$id, 'type'=>'childs', 'isf'=>'0' ) );
-if( $docs )
+/*$docs= $modx->runSnippet('DocLister',array('api'=>true, 'idType'=>'parents', 'parents'=>$id, 'selectFields'=>'id', 'depth'=>5));
+$docs= json_decode($docs, true);
+if(is_array($docs) && count($docs))
 {
-	foreach( $docs AS $row )
+	foreach($docs AS $row)
 	{
-		$docsqq .= ( ! empty( $docsqq ) ? ' OR ' : '' ) . "iddoc={$row[id]}";
+		$docsqq .= ( ! empty($docsqq) ? ' OR ' : '') ."itemid={$row[id]}";
 	}
-}
+}*/
 
 
 
 
-$props= $modx->runSnippet( 'CatalogFilterProps', array( 'id'=>$id, 'onlyid'=>true, 'md5props'=>false ) );
+$props= $modx->runSnippet('CatalogFilter_Props', array('id'=>$id));
+
 
 
 $znachs= array();
-
-if( $props )
+if(is_array($props) && count($props))
 {
-	foreach( $props AS $row )
+	foreach($props AS $row)
 	{
-		if( $row['type'] == 2 || $row['type'] == 4 )
+		if($row['type'] == 'price' || $row['type'] == 'interval')
 		{
-			$znachs[ $row['cfid'] ]= true;
+			$znachs[$row['cf_id'] ]= true;
 		}
 	}
 }
 
 
 
-
-if( ! empty( $props ) )
+if(is_array($props) && count($props))
 {
-	$pr= explode( "/", $modx->catalogFilterListX );
-	if( $pr )
+	$_x= explode('/', $modx->urlXParams );
+	if($_x)
 	{
-		foreach( $pr AS $val )
+		foreach($_x AS $val)
 		{
-			$prid= explode( "_", $val );
-			$prvals= explode( "-", $prid[ 1 ] );
-			$prid= $prid[ 0 ];
-			if( $prvals )
+			$foo= explode('-', $val);
+			$prid= intval(array_shift($foo));
+			if(is_array($foo) && count($foo))
 			{
-				if( $znachs[ $prid ] )
+				if($znachs[$prid])
 				{
-					$propssel[ $prid ][0]= intval( $prvals[0] );
-					$propssel[ $prid ][1]= intval( $prvals[1] );
+					$propssel[$prid][0]= intval($foo[0]);
+					$propssel[$prid][1]= intval($foo[1]);
 				}else{
-					foreach( $prvals AS $prval ) $propssel[ $prid ][ $prval ]= true;
+					foreach($foo AS $prval) $propssel[$prid][$prval]= true;
 				}
 			}
 		}
@@ -95,10 +79,9 @@ if( ! empty( $props ) )
 	
 	
 	
-	
-	foreach( $props AS $row )
+	foreach($props AS $row)
 	{
-		if( $row[ 'type' ] == 2 )
+		if(false && $row['type'] == 'price')
 		{
 			$print .= '<div class="blf_prm catalogfilter__param">
 					<div class="blfp_tit"><span class="famicon">&nbsp;&nbsp;</span><span class="nm">'. $row[ 'name' ] .''.( $row[ 'ed' ] ? '<span><nobr>, '.$row[ 'ed' ].'</nobr></span>' : '' ).'<span></div>';
@@ -129,33 +112,40 @@ if( ! empty( $props ) )
 			$print .= '<div class="clr">&nbsp;</div></div></div>';
 		
 			
+			
+			
+			
+			
 		}else{
-			if( count( $propsvalues[ $row[ 'cfid' ] ] ) >= 2 )
+			if(count($propsvalues[$row['cfid'] ]) >= 2)
 			{
-				$print .= '<div class="blf_prm catalogfilter__param">
-					<div class="blfp_tit"><span class="famicon">&nbsp;&nbsp;</span><span class="nm">'. $row[ 'name' ] .''.( $row[ 'ed' ] ? '<span><nobr>, '.$row[ 'ed' ].'</nobr></span>' : '' ).'<span></div>';
-				$print .= '<div class="blfp_itms">';
-				foreach( $propsvalues[ $row[ 'cfid' ] ] AS $propid => $propval )
+				$print .= '<div class="cf_box catalogfilter__param">
+					<div class="cf_tit font2">'.$row['name'] . ($row['ed'] ? ', '.$row['ed'] : '').'</div>
+					<div class="cf_itms">';
+				foreach($propsvalues[$row['cfid'] ] AS $propid => $propval)
 				{
-					$print .= '<div class="blfp_itm '.( $propssel[ $row[ 'cfid' ] ][ $propval[ 'cfvid' ] ] ? 'blfp_itm_active' : '' ).' catalogfilter__val catalogfilter__val_'. $row[ 'cfid' ] .'" data-tp="'. $row[ 'type' ] .'" data-nm="'. $row[ 'cfid' ] .'" data-val="'. $propval[ 'cfvid' ] .'" data-sel="'.( $propssel[ $row[ 'cfid' ] ][ $propval[ 'cfvid' ] ] ? 'da' : 'net' ).'"><nobr>'. $propval[ 'value' ] .''.( $row[ 'ed' ] ? ' '.$row[ 'ed' ] : '' ).'</nobr></div>';
+					$print .= '<div class="cf_itm '.($propssel[$row['cfid' ] ][$propval['cfv_id' ] ] ? 'cf_itm_s' : '').' catalogfilter__val catalogfilter__val_'.$row['cfid'].'" data-tp="'.$row['type'].'" data-nm="'.$row['cfid'].'" data-vl="'.$propval['cfv_id'].'" data-sel="'.($propssel[$row['cfid'] ][$propval['cfv_id'] ] ? 'y' : 'n').'">[[ico?&n=`checkbox`]][[ico?&n=`checkbox2`]]<span>'.$propval['value'].'</span></div>';
 				}
-				$print .= '</div><div class="clr">&nbsp;</div></div>';
+				$print .= '</div></div><!--.cf_box-->' ."\n\n";
 			}
 		}
 	}
 	
 	
 	
-	if( ! empty( $print ) )
+	if( ! empty($print))
 	{
-		$print= '<div class="blockfilter wbl catalogfilter" data-pageid="'. $id .'" data-url="'. $modx->makeUrl( $id ) .'" data-pagenum="'. $page .'"><div class="blf_tit">Задайте параметры</div>'. $print;
-		$print .= '<div class="clr">&nbsp;</div>';
-		$print .= '<div><div><button class="blfp_button">Подобрать</button></div></div>';
-		$print .= '</div>';
+		$p= '<div class="catalogfilter" data-pageid="'.$id.'" data-url="'.$modx->makeUrl($id).'"><div class="cftit font2">Задайте параметры</div>';
+		
+		$cats= $modx->runSnippet('DocLister',array('tpl'=>'catalogfilter_catilink', 'idType'=>'parents', 'parents'=>$id, 'depth'=>1, 'selectFields'=>'id,pagetitle', 'showParent'=>'1', 'addWhereList'=>"c.isfolder='1' AND c.id!={$id}"));
+		if($cats) $p .= '<div class="cf_box"><div class="cf_tit font2">Категория</div><div class="cf_itms">'. $cats .'</div></div><!--.cf_box-->';
+		
+		$p .= $print;
+		
+		$p .= '<br></div><!--.catalogfilter-->';
 	}
 }
 
 
 
-return $print;
-?>
+return $p;

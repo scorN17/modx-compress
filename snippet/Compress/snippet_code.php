@@ -1,17 +1,29 @@
 <?php
-$version= 'v17';
-//30.03.2017
-//Compress
-/*	&compress=true/false
+/**
+ * Compress
+ *
+ * Компрессор CSS & JS
+ *
+ * @version 18.0
+ * @date    15.06.2017
+ *
+ *
+ *
+ *
+ */
+$version= 'v18.0';
+
+/*
+	&compress=true/false
 	&files - компрессит в &tofile все указанные файлы
 	&tofile - файл, в который комперссить все указанные файлы
 	&print=false/true - выводить код, а не путь к файлу
 	&r=false/true - принудительно пересоздает компресс-файлы
 	&rvars=false/true - замена переменных
-	[!Compress? &file=`css/styles.css`!]
+	[!Compress? &files=`css/styles.css`!]
 	[!Compress? &files=`css: styles.css, catalog.css; css2: shop.css; css3/dop.css` &tofile=`css/all.compress.css`!]
 */
-//============================================================================
+//-----------------------------------------------------------------
 $root= rtrim(MODX_BASE_PATH, "/\\");
 
 $strtr['.css']= array(
@@ -21,7 +33,7 @@ $strtr['.js']= array(
 $pregreplace['.css'][0]= array(
 	"/\/\*(.*)\*\//sU"              => "",
 	"/[\s]{2,}/"                    => " ",
-	"/[\s]*([{\}\[\];:])[\s]*/" => '${1}',
+	"/[\s]*([{\}\[\];:])[\s]*/"     => '${1}',
 	"/[\s]*([,>])[\s]*/"            => '${1}',
 	"/([^0-9])0px/"                 => '${1}0',
 	"/;\}/"                         => '}',
@@ -30,8 +42,8 @@ $pregreplace['.css'][0]= array(
 $pregreplace['.css'][1]= array(
 );
 $pregreplace['.js'][0]= array(
-	"/\/\/(.*)$/mU"    => "",
-	"/\/\*(.*)\*\//sU" => "",
+	"/\/\/(.*)$/mU"                 => "",
+	"/\/\*(.*)\*\//sU"              => "",
 );
 $pregreplace['.js'][1]= array(
 	"/[\s]{2,}/"                    => " ",
@@ -40,49 +52,49 @@ $pregreplace['.js'][1]= array(
 	"/[\s]*([=+!\/-])[\s]*/"        => '${1}',
 	"/[\s]*([?|\*])[\s]*/"          => '${1}',
 );
-//============================================================================
+//-----------------------------------------------------------------
 if(true)
 {
 	if($file) $files= $file;
-	$slash= ( substr( $files, 0, 1 ) == "/" ? false : true );
+	$slash= (substr($files,0,1)=="/" ?false :true);
 	$root .= $slash ? '/' : '';
 	if($files)
 	{
-		$filetype= substr( $files, strrpos( $files, '.' ) );
+		$filetype= substr($files, strrpos($files,'.'));
 		$file_to= $tofile;
-		if( ! $file_to) $file_to= substr( $files, 0, strrpos( $files, '.' ) ) .'.compress'. $filetype;
-		$tmp1= explode( ';', $files );
+		if( ! $file_to) $file_to= substr($files, 0, strrpos($files,'.')) .'.compress'.$filetype;
+		$tmp1= explode(';', $files);
 		if(is_array($tmp1) && count($tmp1))
 		{
 			foreach( $tmp1 AS $row1 )
 			{
-				$tmp2= explode( ':', trim( $row1 ) );
-				if( count( $tmp2 ) == 1 )
+				$tmp2= explode(':', trim($row1));
+				if(count($tmp2) == 1)
 				{
-					$filepath= trim( $row1 );
+					$filepath= trim($row1);
 					if( ! file_exists($root.$filepath)) continue;
 					$filesarray[]= $filepath;
-					if( ! file_exists( $root . $file_to ) || filectime( $root . $filepath ) > filectime( $root . $file_to ) ) $refresh= true;
+					if( ! file_exists($root.$file_to) || filectime($root.$filepath)>filectime($root.$file_to) || filemtime($root.$filepath)>filemtime($root.$file_to)) $refresh= true;
 				}else{
-					$tmp3= explode( ',', $tmp2[ 1 ] );
-					foreach( $tmp3 AS $row3 )
+					$tmp3= explode(',', $tmp2[1]);
+					foreach($tmp3 AS $row3)
 					{
-						$filepath= $tmp2[ 0 ] . trim( $row3 );
+						$filepath= $tmp2[0] . trim($row3);
 						if( ! file_exists($root.$filepath)) continue;
 						$filesarray[]= $filepath;
-						if( ! file_exists( $root . $file_to ) || filectime( $root . $filepath ) > filectime( $root . $file_to ) ) $refresh= true;
+						if( ! file_exists($root.$file_to) || filectime($root.$filepath)>filectime($root.$file_to) || filemtime($root.$filepath)>filemtime($root.$file_to)) $refresh= true;
 					}
 				}
 			}
 		}
 	}
-	if( isset( $strtr[ $filetype ] ) ) $strtr_type= $strtr[ $filetype ];
-	if( isset( $pregreplace[ $filetype ][0] ) ) $pregreplace_type_0= $pregreplace[ $filetype ][0];
-	if( isset( $pregreplace[ $filetype ][1] ) ) $pregreplace_type_1= $pregreplace[ $filetype ][1];
+	if(isset($strtr[$filetype])) $strtr_type= $strtr[$filetype];
+	if(isset($pregreplace[$filetype][0])) $pregreplace_type_0= $pregreplace[$filetype][0];
+	if(isset($pregreplace[$filetype][1])) $pregreplace_type_1= $pregreplace[$filetype][1];
 }
-//============================================================================
-$refresh= ( $refresh || ! empty( $r ) ? true : false );
-if( $refresh && is_array($filesarray) && count($filesarray) )
+//-----------------------------------------------------------------
+$refresh= ($refresh || ! empty($r) ?true :false);
+if($refresh && is_array($filesarray) && count($filesarray))
 {
 	$size_before= 0;
 	$file_to_handle= fopen( $root . $file_to, 'w' );	
@@ -190,15 +202,15 @@ if( $refresh && is_array($filesarray) && count($filesarray) )
 	fwrite( $file_to_handle, "/*Compress {$version} - ".round( $size_after * 100 / $size_before )."%".( $md5_after ? " - ".$md5_after : "" )."*/" );
 	fclose( $file_to_handle );
 }
-//============================================================================
-if( $print === 'true' )
+//-----------------------------------------------------------------
+if($print === 'true')
 {
 	$filecontent= '';
-	$file_to_handle= fopen( $root . $file_to, 'r' );
+	$file_to_handle= fopen($root .$file_to, 'r');
 	if($file_to_handle)
 	{
-		while( ! feof( $file_to_handle ) ) $filecontent .= fread( $file_to_handle, 1024*64 );
-		fclose( $file_to_handle );
+		while( ! feof($file_to_handle)) $filecontent .= fread($file_to_handle, 1024*64);
+		fclose($file_to_handle);
 	}
 	return $filecontent;
 }else return $file_to;

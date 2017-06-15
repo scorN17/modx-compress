@@ -1,88 +1,109 @@
-//v02
-//Кэширование значений фильтра каталога
-//Event: OnBeforeCacheUpdate
-//===================================================================
-$catalog_root= 17;
-//===================================================================
+/**
+ * CF_Values_Cache
+ *
+ * Кэширование значений фильтра каталога
+ *
+ * @version   10.0
+ * @date      17.05.2017
+ * @events    OnBeforeCacheUpdate
+ *
+ * @dependence
+ * SNIPPET DocLister
+ */
 
-$cats= $modx->runSnippet( 'GetDoc6', array( 'ids'=>$catalog_root, 'type'=>'childs', 'depth'=>0, 'isf'=>'1', 'fields'=>'parent,isfolder', 'limit___'=>'50' ) );
+$catalog_root= 15;
+
+//----------------------------------------------------
+
+$cats= $modx->runSnippet('DocLister',array('api'=>true, 'parents'=>$catalog_root, 'selectFields'=>'id,parent,isfolder', 'depth'=>5, 'addWhereList'=>"c.isfolder='1'", 'showParent'=>'1'));
+$cats= json_decode($cats, true);
+
 $list= $cats;
-if( $cats )
+if(is_array($cats) && count($cats))
 {
-	foreach( $cats AS $row )
-	{
-		if( isset( $cats[ $row[ 'parent' ] ] ) ) unset( $list[ $row[ 'parent' ] ] );
-	}
+	foreach($cats AS $row) if(isset($cats[$row['parent'] ])) unset($list[$row['parent'] ]);
 }
-if( $list )
+
+if(is_array($list) && count($list))
 {
-	foreach( $list AS $row )
+	foreach($list AS $row)
 	{
-		$rr= mysql_query( "SELECT * FROM ".$modx->getFullTableName( '_cat_filter_values_cache' )." WHERE catid={$row[id]} AND enabled='y' LIMIT 1" );
-		if( $rr && mysql_num_rows( $rr ) == 0 )
+		$rr= $modx->db->query("SELECT * FROM ".$modx->getFullTableName('_catfilter_value_cache')." WHERE folderid={$row[id]} AND e='y' LIMIT 1");
+		if($rr && $modx->db->getRecordCount($rr)==0)
 		{
-			$rr= mysql_query( "SELECT * FROM ".$modx->getFullTableName( '_cat_filter_values_cache' )." WHERE catid={$row[id]} LIMIT 1" );
-			if( $rr && mysql_num_rows( $rr ) == 0 )
+			$rr= $modx->db->query("SELECT * FROM ".$modx->getFullTableName('_catfilter_value_cache')." WHERE folderid={$row[id]} LIMIT 1");
+			if($rr && $modx->db->getRecordCount($rr)==0)
 			{
-				mysql_query( "INSERT INTO ".$modx->getFullTableName( '_cat_filter_values_cache' )." SET catid={$row[id]}" );
-			}elseif( $rr ){
-				mysql_query( "UPDATE ".$modx->getFullTableName( '_cat_filter_values_cache' )." SET enabled='y' WHERE catid={$row[id]} LIMIT 1" );
+				$modx->db->query("INSERT INTO ".$modx->getFullTableName('_catfilter_value_cache')." SET folderid={$row[id]}");
+			}elseif($rr){
+				$modx->db->query("UPDATE ".$modx->getFullTableName('_catfilter_value_cache')." SET e='y' WHERE folderid={$row[id]} LIMIT 1");
 			}
 		}
 	}	
 }
-$rr= mysql_query( "SELECT * FROM ".$modx->getFullTableName( '_cat_filter_values_cache' )." WHERE ".time()."-dt>".(60*60*24*1)." AND enabled='y' GROUP BY catid LIMIT 100" );
-if( $rr && mysql_num_rows( $rr ) > 0 )
+
+//$modx->logEvent(123, 1, print_r($items,1), '________3____'.$row['folderid'].'_____');
+
+$rr= $modx->db->query("SELECT * FROM ".$modx->getFullTableName('_catfilter_value_cache')."
+	WHERE ".time()."-dt>".(60*60)." AND e='y' GROUP BY folderid LIMIT 100");
+if($rr && $modx->db->getRecordCount($rr))
 {
+	$bar= false;
 	$tmparray_2= array();
-	while( $row= mysql_fetch_assoc( $rr ) )
+	while($row= $modx->db->getRow($rr))
 	{
-		if( $tmparray_2[ $row[ 'catid' ] ] ) continue;
-		$tmparray_2[ $row[ 'catid' ] ]= true;
+		if( ! $bar) $bar= $row['id'];
+
+		if($tmparray_2[$row['folderid'] ]) continue;
+		$tmparray_2[$row['folderid'] ]= true;
 		
-		mysql_query( "UPDATE ".$modx->getFullTableName( '_cat_filter_values_cache' )." SET enabled='n' WHERE catid={$row[catid]}" );
+		$modx->db->query("UPDATE ".$modx->getFullTableName('_catfilter_value_cache')." SET e='n' WHERE folderid={$row[folderid]}");
 		
 		$tmparray= array();
 		
-		$items= $modx->runSnippet( 'GetDoc6', array( 'ids'=>$row[ 'catid' ], 'type'=>'childs', 'depth'=>1, 'isf'=>'0', 'fields'=>'' ) );
-		if( $items )
+		$items= $modx->runSnippet('DocLister',array('api'=>true, 'parents'=>$row['folderid'], 'selectFields'=>'id', 'depth'=>1));
+		$items= json_decode($items, true);
+		if(is_array($items) && count($items))
 		{
-			foreach( $items AS $item )
+			foreach($items AS $item)
 			{
-				$rr2= mysql_query( "SELECT * FROM ".$modx->getFullTableName( '_cat_filter_value' )." WHERE iddoc={$item[id]}" );
-				if( $rr2 && mysql_num_rows( $rr2 ) > 0 )
+				$rr2= $modx->db->query("SELECT * FROM ".$modx->getFullTableName('_catfilter_value')." WHERE itemid={$item[id]}");
+				if($rr2 && $modx->db->getRecordCount($rr2))
 				{
-					while( $row2= mysql_fetch_assoc( $rr2 ) )
+					while($row2= $modx->db->getRow($rr2))
 					{
-						$row2[ 'value' ]= addslashes( trim( $row2[ 'value' ] ) );
-						if( ! $row2[ 'value' ] ) continue;
-						if( $tmparray[ $row[ 'catid' ] ][ $row2[ 'idfilter' ] ][ $row2[ 'value' ] ] ) continue;
-						$tmparray[ $row[ 'catid' ] ][ $row2[ 'idfilter' ] ][ $row2[ 'value' ] ]= true;
+						$row2['value']= $modx->db->escape(trim($row2['value']));
+						if( ! $row2['value']) continue;
+						if( $tmparray[ $row[ 'folderid' ] ][ $row2[ 'cf_id' ] ][ $row2[ 'value' ] ] ) continue;
+						$tmparray[ $row[ 'folderid' ] ][ $row2[ 'cf_id' ] ][ $row2[ 'value' ] ]= true;
 						
-						$rr3= mysql_query( "SELECT * FROM ".$modx->getFullTableName( '_cat_filter_values_cache' )."
-							WHERE catid={$row[catid]} AND ( cfid=0 OR ( cfid={$row2[idfilter]} AND `value`='{$row2[value]}' ) ) ORDER BY cfid LIMIT 1" );
-						if( $rr3 && mysql_num_rows( $rr3 ) == 1 )
+						
+						
+						$rr3= $modx->db->query("SELECT * FROM ".$modx->getFullTableName('_catfilter_value_cache')."
+							WHERE folderid={$row[folderid]} AND (cf_id=0 OR (cf_id={$row2[cf_id]} AND `value`='{$row2[value]}')) ORDER BY cf_id LIMIT 1");
+						if($rr3 && $modx->db->getRecordCount($rr3))
 						{
-							mysql_query( "UPDATE ".$modx->getFullTableName( '_cat_filter_values_cache' )."
-								SET ".( mysql_result( $rr3, 0, 'cfid' ) == '0' ? "cfid={$row2[idfilter]}, `value`='{$row2[value]}'," : "" )." docid={$row2[iddoc]}, cfvid={$row2[id]}, dt=".time().", enabled='y'
-									WHERE id=". mysql_result( $rr3, 0, 'id' ) ." LIMIT 1" );
-						}elseif( $rr3 ){
-							mysql_query( "INSERT INTO ".$modx->getFullTableName( '_cat_filter_values_cache' )." SET
-								docid={$row2[iddoc]}
+							$foo= $modx->db->getRow($rr3);
+							
+							$modx->db->query("UPDATE ".$modx->getFullTableName('_catfilter_value_cache')."
+								SET ".($foo['cf_id']=='0' ? "cf_id={$row2[cf_id]}, `value`='{$row2[value]}'," : "" )." itemid={$row2[itemid]}, cfv_id={$row2[id]}, dt=".time().", e='y'
+									WHERE id={$foo['id']} LIMIT 1");
+						}elseif($rr3){
+							$modx->db->query("INSERT INTO ".$modx->getFullTableName('_catfilter_value_cache')." SET
+								itemid={$row2[itemid]}
 								, dt=".time()."
-								, catid={$row[catid]}
-								, cfvid={$row2[id]}
-								, cfid={$row2[idfilter]}
+								, folderid={$row[folderid]}
+								, cfv_id={$row2[id]}
+								, cf_id={$row2[cf_id]}
 								, `value`='{$row2[value]}'
-								" );
+								");
 						}
 					}
 				}
 			}
 		}else{
-			mysql_query( "UPDATE ".$modx->getFullTableName( '_cat_filter_values_cache' )." SET dt=".time()." WHERE id=". mysql_result( $rr, 0, 'id' ) ." LIMIT 1" );
+			$modx->db->query("UPDATE ".$modx->getFullTableName('_catfilter_value_cache')." SET dt=".time()." WHERE id={$bar} LIMIT 1");
 			continue;
 		}
-		//print '<pre>'.print_r($tmparray,1).'</pre>';
 	}
 }

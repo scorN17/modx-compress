@@ -1,135 +1,173 @@
 <?php
-//============================================================================
-$catalog_koren= 14;
-$catalog_template= 2;
-$MaxItemsInPage= 4;
-//============================================================================
+$catalogroot= 15; // Корень каталога
 
-	
-$myid= $modx->documentIdentifier;
-if( empty( $id ) ) $id= $myid;
-//$doc= $modx->getDocument( $id, 'id,pagetitle,isfolder,content,introtext' );
-$doc= $modx->runSnippet( 'GetDoc6', array( 'ids'=>$id, 'type'=>'this', 'fields'=>'pagetitle,isfolder,content,introtext,parent', 'tvfields'=>'image', 'isf'=>'all' ) );
-$doc= $doc[ $id ];
+$itemid_prefix= 'i_';
 
+$items_in_page= 20; // Пагинация
+$paginate_prefix= 'page_';
 
-$lvl= $modx->runSnippet( 'GetLvl', array( 'koren'=>$catalog_koren, 'id'=>$id ) );
-$maincategory= $modx->runSnippet( 'GetIdOnLvl', array( 'koren'=>$catalog_koren, 'id'=>$id ) );
+$selectFields= 'c.id,pagetitle,isfolder,content'; // Для DocLister
+$tvList= 'article,descript,new,images,price,discount,ed'; // Для DocLister
 
+//-----------------------------------------------------------------------------------
 
-$ParentsPublishedList_flag= $modx->runSnippet( 'ParentsPublishedList', array( 'koren'=>$catalog_koren, 'id'=>$id ) );
-if( $lvl && ! $ParentsPublishedList_flag ) $modx->sendErrorPage();
+if( ! $id) $id= $modx->documentIdentifier;
+if($id==$catalogroot) return;
 
+$item= $modx->getDocument($id,'isfolder,parent');
 
-if( $modx->catalogFilterListX ) $filterpr= $modx->catalogFilterListX;
-if( $filterpr )
+if( ! $item['isfolder'])
 {
-	$filterparam_flag= true;
-	$filter_ids= $modx->runSnippet( 'CatalogFilter_Items', array( 'id'=>$id, 'filterpr'=>$filterpr ) );
-}
-//$print .= print_r( $filter_ids, 1 );
-
-
-$page= intval( $modx->catalogPageNum );
-if( $page > 1 && $page < 1000 ){}else{ $page= 1; }
-$page_s= ( $page - 1 ) * $MaxItemsInPage;
-
-
-if( $doc[ 'isfolder' ] == 1 )
-{
-	if( $filterparam_flag )
-	{
-		$docs= array();
-		$docs2= $modx->runSnippet( 'GetDoc6', array( 'ids'=>$id, 'idslist'=>$filter_ids[0], 'type'=>'childs', 'fields'=>'pagetitle,isfolder,introtext,menuindex,parent',
-											   'tvfields'=>'image,price,edizmerenia,birka', 'isf'=>'0', 'sort'=>'menuindex', 'limit'=>$page_s.",".$MaxItemsInPage ) );
-		
-		$docs_items_count= $modx->runSnippet( 'GetDoc6', array( 'ids'=>$id, 'idslist'=>$filter_ids[0], 'type'=>'childs', 'isf'=>'0' ) );
-		$docs_items_count= count( $docs_items_count );
-		
-	}else{
-		$docs= $modx->runSnippet( 'GetDoc6', array( 'ids'=>$id, 'type'=>'childs', 'depth'=>'1', 'fields'=>'pagetitle,isfolder', 'isf'=>'1', 'sort'=>'menuindex' ) );
-		
-		$docs2= $modx->runSnippet( 'GetDoc6', array( 'ids'=>$id, 'type'=>'childs', 'depth'=>'1', 'fields'=>'pagetitle,isfolder,introtext,menuindex,parent',
-												'tvfields'=>'image,price,edizmerenia,birka', 'isf'=>'0', 'sort'=>'menuindex', 'limit'=>$page_s.",".$MaxItemsInPage ) );
-		
-		$docs_items_count= $modx->runSnippet( 'GetDoc6', array( 'ids'=>$id, 'type'=>'childs', 'depth'=>'1', 'isf'=>'0' ) );
-		$docs_items_count= count( $docs_items_count );
-	}
+	$pp_items= '<div class="catalog_page">';
 	
-	if( $docs && $docs2 ) $docs= array_merge( $docs, $docs2 ); elseif( $docs2 ) $docs= $docs2;
+	$pp_items .= $modx->runSnippet('DocLister',array('idType'=>'documents', 'documents'=>$id, 'selectFields'=>$selectFields, 'tvList'=>$tvList,
+											   'tpl'=>'catalog_itemTpl_Page',
+											   'prepare'=>'catalogItemPrepare',
+											  ));
 	
-	if( $docs )
+	$pp_items .= '<br></div><!--.catalog_page-->';
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+// ---------------------------------------------------------------------------------------------------------------------
+}else{
+	$idType= 'parents';
+	$ids= $id;
+	$page= 1;
+	
+	if($modx->urlXParams) $_x= $modx->urlXParams;
+	if($_x)
 	{
-		$ii= 0;
-		$iii= 0;
-		foreach( $docs AS $row )
+		$param_id= 0;
+		
+		$_xe= $_x;
+		$_xp= $_x;
+		
+		if(strpos($_x, $paginate_prefix) !== false)
 		{
-			if( $row[ 'isfolder' ] == 1 || $itemprinttype == 'category' )
+			$page= false;
+			$_xp= substr($_xp, 0, strrpos($_xp, '/'.$paginate_prefix));
+		}
+		
+		$_xe= explode('/', $_x);
+		
+		foreach($_xe AS $key => $row)
+		{
+			if( ! $page && $key==count($_xe)-1)
 			{
-				$ii++;
-				$categories .= $modx->runSnippet( 'CAT_ITEM', array( 'id'=>$id, 'type'=>'category', 'row'=>$row, 'last'=>( $ii % 3 == 0 ? true : false ), 'indexcatalog'=>$indexcatalog ) );
-				
+				if(strpos($row, $paginate_prefix) === 0)
+					$page= intval(substr($row, strlen($paginate_prefix)));
+					else $page404= true;
+				break;
+			}
+			
+			$row= explode('-', $row);
+			$foo= intval(array_shift($row));
+			if($foo <= $param_id)
+			{
+				$page404= true;
+				break;
 			}else{
-				$iii++;
-				$items .= $modx->runSnippet( 'CAT_ITEM', array( 'type'=>'item', 'row'=>$row, 'last'=>( $iii % 2 == 0 ? true : false ) ) );
+				$param_id= $foo;
+				$foo= 0;
+				if(is_array($row) && count($row))
+				{
+					foreach($row AS $k => $p)
+					{
+						if( ! $k) continue;
+						$p= intval($p);
+						if($p <= $foo)
+						{
+							$page404= true;
+							break 2;
+						}else{
+							$foo= $p;
+						}
+					}
+				}else $page404= true;
 			}
 		}
 	}
 	
-	if( ! empty( $doc[ 'content' ] ) ) $content .= $doc[ 'content' ];
+	if($page404 || ! $page) $modx->sendErrorPage();
 	
-}elseif( true ){
-	$docinfo= $modx->runSnippet( 'GetDoc6', array( 'ids'=>$id, 'type'=>'this', 'fields'=>'pagetitle,isfolder,introtext,menuindex,parent,content',
-												  'tvfields'=>'image,price,edizmerenia,birka', 'isf'=>'0' ) );
-	$item_page .= $modx->runSnippet( 'CAT_ITEM', array( 'type'=>'itempage', 'thispage'=>true, 'row'=>$docinfo[ $id ] ) );
+	if($_xp)
+	{
+		$ids= $modx->runSnippet('CatalogFilter_Items', array('id'=>$id, '_x'=>$_xp));
+		if($ids) $idType= 'documents';
+	}
+	
+	$pp_items= $modx->runSnippet('DocLister',array('idType'=>$idType, $idType=>$ids, 'selectFields'=>$selectFields, 'tvList'=>$tvList,
+												   'id'=>'items',
+												   'showParent'=>0,
+												   'tpl'=>'catalog_itemTpl',
+												   'prepare'=>'catalogItemPrepare',
+												   'depth'=>5,
+												   'sortType'=>'other',
+												   'orderBy'=>'article',
+												   'tvSortType'=>'DECIMAL',
+												   'offset'=>($page-1)*$items_in_page,
+												   'display'=>$items_in_page,
+												   'paginate'=>'pages',
+												  ));
+	
+	$total_pages= $modx->getPlaceholder('items.totalPages');
+	if($total_pages>=2)
+	{
+		$pp_pages= '<div class="pagination"><div class="pgn_i pgn_tit font2">Страницы</div>' ."\n";
+		
+		//$prev= ($page <= 2 ? false : $page-1);
+		//if($prev) $pp_pages .= '<div class="pgn_i pgn_prev font2"><a href="'.$modx->makeUrl($id) .'x/' .($_xp?$_xp.'/':'') .$paginate_prefix.$prev.'/"> < </a></div>';
+		
+		$visible_ot= $page -3;
+		$visible_do= $page +3;
+		
+		for($ii=1; $ii<=$total_pages; $ii++)
+		{
+			if($ii >= 3 && $ii < $visible_ot)
+			{
+				if( ! $foo)
+				{
+					$pp_pages .= '<div class="pgn_i pgn_toch font2">...</div>' ."\n";
+					$foo= true;	
+				}
+				continue;
+			}
+			if($ii <= $total_pages-2 && $ii > $visible_do)
+			{
+				if( ! $bar)
+				{
+					$pp_pages .= '<div class="pgn_i pgn_toch font2">...</div>' ."\n";
+					$bar= true;	
+				}
+				continue;
+			}
+				
+			$pp_pages .= '<div class="pgn_i pgn_p '.($ii==$page?'pgn_a':'').' font2"><a href="'.$modx->makeUrl($id);
+			$pp_pages .= ($_xp || $ii>=2 ? 'x/' : '');
+			$pp_pages .= ($_xp ? $_xp.'/' : '');
+			$pp_pages .= ($ii>=2 ? 'page_'.$ii.'/' : '');
+			$pp_pages .= '">'. $ii .'</a></div>' ."\n";
+		}
+		
+		//$next= ($page+1 >= $total_pages ? false : $page+1);
+		//if($next) $pp_pages .= '<div class="pgn_i pgn_next font2"><a href="'.$modx->makeUrl($id) .'x/' .($_xp?$_xp.'/':'') .$paginate_prefix.$next.'/"> > </a></div>';
+		
+		$pp_pages .= '<br></div><br>';
+	}
 }
 
+$pp .= '<div class="catalog">';
+$pp .= $pp_pages;
+$pp .= $pp_items;
+$pp .= $pp_pages;
+$pp .= '<br></div><!--.catalog-->';
 
-if( $type != 'content' && $page == 1 )
-{
-	$print .= '<div class="clr">&nbsp;</div>';
-	$print .= '<div class="category_content">'. $content .'</div>';
-	$print .= '<div class="clr">&nbsp;</div>';
-}
-
-
-if( $type != 'content' ) $print .= '<div id="ajax_content">';
-
-
-if( $filterparam_flag && ! $filter_ids[0] ) $print .= '<div class="catalog_notfound">Товар не найден!<br />Задайте другие параметры.</div>';
-
-
-$print .= '<div id="catalog" class="catalog '.( $indexcatalog ? 'catalogindex' : 'catalogpage' ).'" itemscope itemtype="http://schema.org/Product">';
-if( ! empty( $categories ) )
-{
-	$print .= $categories;
-	$print .= '<div class="clr">&nbsp;</div>';
-	if( ! empty( $items ) ) $print .= '<br /><br />';
-}
-if( ! empty( $items ) )
-{
-	$pages= $modx->runSnippet( 'Pagination', array( 'docs_items_count'=>$docs_items_count, 'myid'=>$id, 'active_page'=>$page, 'MaxItemsInPage'=>$MaxItemsInPage, 'filterpr'=>$filterpr ) );
-	$print .= $pages . ( $pages ? '<br /><br /><br />' : '' );
-}
-if( ! empty( $items ) )
-{
-	$print .= $items;
-	$print .= '<div class="clr">&nbsp;</div>';
-}
-if( ! empty( $item_page ) )
-{
-	$print .= $item_page;
-}
-if( ! empty( $items ) )
-{
-	$print .= '<div class="clr">&nbsp;</div>';
-	$print .= ( $pages ? '<br /><br />' : '' ) . $pages;
-}
-$print .= '</div>';
-
-
-if( $type != 'content' ) $print .= '</div>';
-
-
-return $print;
-?>
+return $pp;

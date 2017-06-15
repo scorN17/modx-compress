@@ -1,33 +1,30 @@
 <?php
-//v03
-//============================================================================
-	
-$idfilter= intval( $idfilter );
+$catalogroot= 15; // Корень каталога
 
-$parentslist= $modx->runSnippet( 'GetIdOnLvl', array( 'id'=>$id, 'koren'=>17 ) );
-if( $parentslist ) foreach( $parentslist AS $row ) if( $row[ 'id' ] ) $qq .= ( ! empty( $qq ) ? " OR " : "" ) ."cf.docs LIKE '%,{$row[id]},%'";
+//-----------------------------------------------------------------------------------
 
-if( $qq ) $rr= mysql_query( "SELECT *, cf.id AS cfid, cfv.id AS cfvid
-	FROM ". $modx->getFullTableName( '_cat_filter' ) ." AS cf
-	LEFT JOIN ". $modx->getFullTableName( '_cat_filter_value' ) ." AS cfv ON cfv.idfilter=cf.id AND cfv.iddoc='{$id}'
-	WHERE ( {$qq} ) ".( $idfilter ? " AND cfv.idfilter={$idfilter}" : "" )." AND cf.enabled=1 ORDER BY cf.ii, cf.id" );
+$parentslist= $modx->runSnippet('GetIdOnLvl', array('id'=>$id, 'koren'=>$catalogroot));
+if(is_array($parentslist) && count($parentslist)) foreach($parentslist AS $row) if($row['id']) $qq .= ( ! empty($qq) ? " OR " : "") ."cf.folders LIKE '%,{$row[id]},%'";
 
-if( $rr && mysql_num_rows( $rr ) > 0 )
+if($qq) $rr= $modx->db->query("SELECT *, cf.id AS cfid, cfv.id AS cfvid
+	FROM ".$modx->getFullTableName('_catfilter')." AS cf
+	LEFT JOIN ".$modx->getFullTableName('_catfilter_value')." AS cfv ON cfv.cf_id=cf.id AND cfv.itemid='{$id}'
+	WHERE ( {$qq} ) AND cf.e='y' ORDER BY cf.i, cf.id" );
+if($rr && $modx->db->getRecordCount($rr))
 {
-	while( $row= mysql_fetch_assoc( $rr ) )
+	while($row= $modx->db->getRow($rr))
 	{
-		if( ! $res[ $row[ 'cfid' ] ][ 'id' ] ) $res[ $row[ 'cfid' ] ]= $row;
+		if( ! $res[$row['cfid'] ]['id']) $res[$row['cfid'] ]= $row;
 		
-		if( $md5props )
+		if($values)
 		{
-			if( true )
+			if(true)
 			{
-				$vals= explode( "||", $row[ 'value' ] );
-				
-				foreach( $vals AS $vv )
-				{
-					$res[ $row[ 'cfid' ] ][ 'md5' ][ md5( $vv ) ]= $vv;
-				}
+				$vals= explode('||', $row['value']);
+				if(is_array($vals) && count($vals))
+					foreach($vals AS $vv)
+						if($vv)
+							$res[$row['cfid'] ]['values'][md5($vv)]= $vv;
 				
 			}elseif( false ){
 				$vals= explode( "||", $row[ 'value' ] );
@@ -36,7 +33,7 @@ if( $rr && mysql_num_rows( $rr ) > 0 )
 					$mm= explode( "::", $vv );
 					if( count( $vals ) >= 2 )
 					{
-						$res[ $row[ 'cfid' ] ][ 'md5' ][ md5( $mm[ 0 ] ) ]= $mm;
+						$res[ $row[ 'cfid' ] ][ 'values' ][ md5( $mm[ 0 ] ) ]= $mm;
 					}else{
 						$res[ $row[ 'cfid' ] ][ 'price' ]= $mm[ 1 ];
 					}
@@ -45,7 +42,4 @@ if( $rr && mysql_num_rows( $rr ) > 0 )
 		}
 	}
 	return $res;
-}else{
-	return false;	
-}
-?>
+}else return false;

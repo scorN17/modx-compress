@@ -1,118 +1,70 @@
 
 
-.blockfilter {
-	padding: 15px 0 0;
+
+
+
+.catalogfilter {
+	margin: 40px 0 0;
+	z-index: 5;
 }
-	.blockfilter .blf_tit {
-		font-size: 22px;
-		padding: 0px 0px 20px 15px;
+	.leftmenu_a .catalogfilter {
+		display: none;
 	}
-	
-	.blockfilter .blf_prm {
-		padding: 10px 15px;
-		border-bottom: 1px solid #ddd;
+	.catalogfilter .cftit {
+		padding: 0 0 20px 0;
+		font-size: 130%;
+		color: #505d61;
+		text-align: center;
 	}
-		.blockfilter .blf_prm .blfp_tit {
-			padding: 0 0 5px 0;
-/*			cursor: pointer;*/
+	.catalogfilter .cf_box {
+		padding: 0 0 30px;
+	}
+	.catalogfilter .cf_tit {
+		padding: 0 0 6px 67px;
+		font-size: 110%;
+		color: #505d61;
+	}
+		.catalogfilter .cf_tit:before {
+			content: "";
+			position: absolute;
+			height: 1px;
+			border-bottom: 1px solid #adbcc0;
+			left: 0;
+			top: 8px;
+			width: 46px;
 		}
-			.blockfilter .blf_prm .blfp_tit .nm {
-				text-transform: uppercase;
-				letter-spacing: 1px;
-				font-weight: 700;
-				font-size: 14px;
+	.catalogfilter .cf_itms {
+	}
+		.catalogfilter .cf_itms .cf_itm {
+			margin: 0 0 0 25px;
+			padding: 5px 0 5px 42px;
+			cursor: pointer;
+		}
+			.catalogfilter .cf_itms .cf_itm span {
 			}
-				.blockfilter .blf_prm .blfp_tit .nm span {
-					text-transform: none;
+			.catalogfilter .cf_itms .cf_itm svg {
+				position: absolute;
+				top: 4px;
+				left: 0;
+				width: 22px;
+				height: 22px;
+			}
+			.catalogfilter .cf_itms .cf_itm .svgicon_checkbox {
+				color: #adbcc0;
+			}
+				.catalogfilter .cf_itms .cf_itm:hover .svgicon_checkbox {
+					color: #505d61;
 				}
-			.blockfilter .blf_prm .blfp_tit .famicon {
-				color: #000;
+				.catalogfilter .cf_itms .cf_itm_s .svgicon_checkbox {
+					display: none;
+				}
+			.catalogfilter .cf_itms .cf_itm .svgicon_checkbox2 {
+				color: #00baf4;
 				display: none;
 			}
-				.blockfilter .blf_prm .blfp_tit .famicon:before {
-					content: "\f105";
+				.catalogfilter .cf_itms .cf_itm:hover .svgicon_checkbox2 {
+					color: #00a5d9;
 				}
-		.blockfilter .blf_prm .blfp_itms {
-		}
-		.blockfilter .open .blfp_itms {
-			display: block;
-		}
-			.blockfilter .blf_prm .blfp_itms .blfp_itm {
-				padding: 0px 0px 4px 32px;
-				cursor:pointer;
-				background: url( "../img/filtr1.png" ) left 3px no-repeat;
-				font-size:18px
-			}
-				.blockfilter .blf_prm .blfp_itms .blfp_itm:hover {
-					background-position: left -42px;
+				.catalogfilter .cf_itms .cf_itm_s .svgicon_checkbox2 {
+					display: block;
 				}
-				.blockfilter .blf_prm .blfp_itms .blfp_itm_active {
-					background-position: left -175px;
-				}
-					.blockfilter .blf_prm .blfp_itms .blfp_itm_active:hover {
-						background-position: left -175px;
-					}
-
-
-					
-					
-		.blockfilter .blfp_button {
-			background: #25aae2;
-			color: #fff;
-			width: 100%;
-			padding: 7px 0;
-			border: none;
-			text-transform: uppercase;
-			letter-spacing: 1px;
-			font-weight: bold;
-		}
-			.blockfilter .blfp_button:hover {
-				background: #0088c1;
-			}
-		
-		.blockfilter .blf_prm .blfp_itms .blfp_cena {
-			width: 110px;
-			padding: 0 0 5px;
-		}
-			.blockfilter .blf_prm .blfp_itms .blfp_cena .blfp_cena_tit {
-				
-			}
-			.blockfilter .blf_prm .blfp_itms .blfp_cena .blfp_cena_val {
-				
-			}
-				.blockfilter .blf_prm .blfp_itms .blfp_cena .blfp_cena_val input {
-					width: 100%;
-					padding: 2px;
-					text-align: center;
-					font-size: 16px;
-				}
-		.blockfilter .blf_prm .blfp_itms .blfp_cenaot {
-			float: left;
-		}
-		.blockfilter .blf_prm .blfp_itms .blfp_cenado {
-			float: right;
-		}
-
-
-		.blockfilter .blf_prm .blfp_itms .blfp_znach {
-			width: 110px;
-			padding: 0 0 5px;
-		}
-			.blockfilter .blf_prm .blfp_itms .blfp_znach .blfp_znach_tit {
-				
-			}
-			.blockfilter .blf_prm .blfp_itms .blfp_znach .blfp_znach_val {
-				
-			}
-				.blockfilter .blf_prm .blfp_itms .blfp_znach .blfp_znach_val input {
-					width: 100%;
-					padding: 2px;
-					text-align: center;
-					font-size: 16px;
-				}
-		.blockfilter .blf_prm .blfp_itms .blfp_znachot {
-			float: left;
-		}
-		.blockfilter .blf_prm .blfp_itms .blfp_znachdo {
-			float: right;
-		}

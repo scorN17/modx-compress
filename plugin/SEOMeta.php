@@ -17,7 +17,7 @@
 
 $html= $modx->documentOutput;
 
-if(true || isset($_GET['test']))
+if(true)
 {
 	$base= MODX_SITE_URL;
 	

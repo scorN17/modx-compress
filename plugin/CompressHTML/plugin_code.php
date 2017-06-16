@@ -1,24 +1,26 @@
-РАБОТАЕТ НЕ КОРРЕКТНО - ПОКА НЕ ИСПОЛЬЗОВАТЬ
+/**
+ * CompressHTML
+ *
+ * HTML компрессор
+ *
+ * @version     2.0
+ * @date        16.06.2017
+ * @internal    @events OnWebPagePrerender
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 
-
-
-
-
-
-
-
-$varsion= 'v1.2';
-//06.08.2016
-//CompressHTML
-//Event: OnWebPagePrerender
-//============================================================================
-if( ! isset( $_GET[ 'test' ] ) )
+if( ! isset($_GET['test']))
 {
 	$filecontent= $modx->documentOutput;
 	$filetype= '.html';
-	$strtr[ '.html' ]= array(
+	$strtr['.html']= array(
 	);
-	$pregreplace[ '.html' ][0]= array(
+	$pregreplace['.html'][0]= array(
 		//"/<!--[^\[](.*)-->/sU" => "",
 		"/[\r]/" => "",
 		"/[\t]/" => "\n",

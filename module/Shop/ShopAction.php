@@ -28,6 +28,13 @@ $smtpport= 465;
 //SNIPPET Formochki //SNIPPET ShopAction //MODULE scorn_orders //SNIPPET LK_Restore
 //----------------------------------------------------------------------------------
 
+
+$selectFields= 'c.id,pagetitle,isfolder,content'; // Для DocLister
+$tvList= 'article,descript,new,images,price,ed'; // Для DocLister
+
+// ---------------------------------------------------------------------------------
+
+
 /*
 	1   - Неоформленный заказ
 	5   - Заказ оформлен - готов к оплате
@@ -44,10 +51,10 @@ $smtpport= 465;
 */
 
 
-$selectFields= 'c.id,pagetitle,isfolder,content'; // Для DocLister
-$tvList= 'article,descript,new,images,price,ed'; // Для DocLister
 
-// ---------------------------------------------------------------------------------
+$userid= $_SESSION['webuserinfo' ]['auth'] ? $_SESSION['webuserinfo' ]['id'] : 0;
+
+
 
 
 $id= intval($id);
@@ -280,6 +287,7 @@ if($act == 'checkout')
 		$modx->db->query("UPDATE ".$modx->getFullTableName('_shop_mail')." SET result='".($phpmailer_result?'y':'n')."' WHERE code='{$code}' LIMIT 1");
 		
 		$modx->db->query("UPDATE ".$modx->getFullTableName('_Shop_Order')." SET
+			userid={$userid},
 			status=5,
 			fio='{$fio}',
 			email='{$email}',

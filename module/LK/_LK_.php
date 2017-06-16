@@ -101,6 +101,16 @@ if($t == 'panel')
 	$p .= $modx->runSnippet('LK_UserPanel');
 }
 
+if($t == 'shoporders')
+{
+	if( ! $_SESSION['webuserinfo']['auth'])
+	{
+		header('location: '.$modx->makeUrl($lk));
+		exit();
+	}
+	$p .= $modx->runSnippet('LK_ShopOrders');
+}
+
 	
 	
 if($t != 'panel') $p .= '<br></div>';

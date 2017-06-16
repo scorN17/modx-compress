@@ -28,6 +28,49 @@ if($create)
 	
 	
 	
+$modx->db->query("CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName('_shop_order')." (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userid` int(11) NOT NULL,
+  `status` tinyint(4) NOT NULL,
+  `code` varchar(15) NOT NULL,
+  `itogo` decimal(10,2) NOT NULL,
+  `fio` varchar(63) NOT NULL,
+  `email` varchar(63) NOT NULL,
+  `phone` varchar(31) NOT NULL,
+  `city` varchar(63) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `message` varchar(255) NOT NULL,
+  `logs` text NOT NULL,
+  `checkout` bigint(20) NOT NULL,
+  `user` varchar(63) NOT NULL,
+  `secret` varchar(63) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+	
+$modx->db->query("CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName('_shop_mail')." (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(15) NOT NULL,
+  `mail` text NOT NULL,
+  `result` set('y','n') NOT NULL DEFAULT 'y',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+	
+$modx->db->query("CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName('_shop_items')." (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(15) NOT NULL,
+  `id_item` int(11) NOT NULL,
+  `name` varchar(63) NOT NULL,
+  `art` varchar(63) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `count` int(11) NOT NULL,
+  `ed` varchar(15) NOT NULL,
+  `prms` text NOT NULL,
+  `uniq` varchar(63) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+	
+	
+	
 	
 	$code= 'w'.(date('Y')-2016).date('md');
 	$num= 0;

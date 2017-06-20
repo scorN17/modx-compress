@@ -16,21 +16,20 @@
 $mailtype_smtp= true;
 
 //КОМУ (через запятую)
-$mailto= 'stroy-sitiug@yandex.ru';
 $mailto= 'sergey.it@delta-ltd.ru';
 
 //Видимые копии (через запятую)
 $mailcc= false;
 
 //Скрытые копии (через запятую)
-$mailbcc= 'sergey.it@delta-ltd.ru';
+$mailbcc= false;
 
 //ОТ (если SMTP, то это поле - логин)
-$mailfrom= 'stroy.notice@yandex.ru';
+$mailfrom= 'feedback.noreply@yandex.ru';
 
 //Пароль от почты (если SMTP)
-$mailpassw= 'f786w76f23g97f6vg9f6';
-//Любимый киногерой: 9ц769апр379п //Секретный вопрос от почты
+$mailpassw= 'XSbKjp7ZjdoaesD_o_0j';
+//Любимый киногерой: ----------- //Секретный вопрос от почты
 
 //Сервер SMTP (если SMTP)
 $smtp= 'smtp.yandex.ru';

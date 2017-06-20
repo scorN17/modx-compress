@@ -4,8 +4,8 @@
  * 
  * Формочки
  * 
- * @version     1.1
- * @date        23.05.2017
+ * @version     1.2
+ * @date        20.06.2017
  *
  *
  *
@@ -16,6 +16,7 @@
 $mailtype_smtp= true;
 
 //КОМУ (через запятую)
+$mailto= 'stroy-sitiug@yandex.ru';
 $mailto= 'sergey.it@delta-ltd.ru';
 
 //Видимые копии (через запятую)
@@ -25,19 +26,19 @@ $mailcc= false;
 $mailbcc= 'sergey.it@delta-ltd.ru';
 
 //ОТ (если SMTP, то это поле - логин)
-$mailfrom= 'feedback.noreply@yandex.ru';
+$mailfrom= 'stroy.notice@yandex.ru';
 
 //Пароль от почты (если SMTP)
-$mailpassw= 'XSbKjp7ZjdoaesD_o_0j';
+$mailpassw= 'f786w76f23g97f6vg9f6';
+//Любимый киногерой: 9ц769апр379п //Секретный вопрос от почты
 
-//Любимый киногерой: ----- //Секретный вопрос от почты
 //Сервер SMTP (если SMTP)
 $smtp= 'smtp.yandex.ru';
 
 //Порт SMTP (если SMTP)
 $smtpport= 465;
 
-//SNIPPET Formochki //SNIPPET ShopAction //MODULE scorn_orders //SNIPPET LK_Restore
+//SNIPPET Formochki
 //----------------------------------------------------------------------------------
 
 /**
@@ -62,7 +63,43 @@ $smtpport= 465;
 
 if($_GET['act']=='formochki_send')
 {
-	include_once( MODX_MANAGER_PATH .'includes/controls/class.phpmailer.php' );
+	// CAPTCHA --------------------------------------------------------------------------
+	if(true)
+	{
+		$captcha_flag= false;
+		$reg_captcha= $_POST['g-recaptcha-response'];
+		if($_SESSION['g-recaptcha'][$reg_captcha]) $captcha_flag= true;
+		elseif($reg_captcha){
+			$postdata= array(
+				'secret'    => '6LeOGiYUAAAAANUTeFo9eT9MEjKltc0lxq9tQLSa',
+				'response'  => $reg_captcha,
+				'remoteip'  => $_SERVER['REMOTE_ADDR']
+			);
+			$curloptions= array(
+				CURLOPT_URL               => 'https://www.google.com/recaptcha/api/siteverify',
+				CURLOPT_RETURNTRANSFER    => true,
+				CURLOPT_POST              => true,
+				CURLOPT_POSTFIELDS        => $postdata
+			);
+			$curl= curl_init();
+			curl_setopt_array($curl, $curloptions);
+			$curlresult= curl_exec($curl);
+			if( ! curl_errno($curl))
+			{
+				$curlresult= json_decode($curlresult,true);
+				if($curlresult['success']===true)
+				{
+					$captcha_flag= true;
+					$_SESSION['g-recaptcha'][$reg_captcha]= true;
+				}
+			}else $result= '{"result":"error","text":"Ошибка. Попробуйте позже или обратитесь к администратору."}';
+			curl_close($curl);
+		}
+		if( ! $result && ! $captcha_flag) $result= '{"result":"error","text":"Вы робот?"}';
+	}
+	// CAPTCHA --------------------------------------------------------------------------
+	
+	
 	
 	$frm_formid= intval($_POST['frm_formid']);
 	$frm_name= trim($_POST['frm_name']);
@@ -71,14 +108,18 @@ if($_GET['act']=='formochki_send')
 	$frm_kogda= trim($_POST['frm_kogda']);
 	$frm_pageid= intval($_POST['frm_pageid']);
 	$frm_text= trim($_POST['frm_text']);
-	$frm_text2= str_replace("\r\n", '<br>', $frm_text);
-
+	$frm_text2= str_replace("\r", '', $frm_text);
+	$frm_text2= str_replace("\n", '<br>', $frm_text2);
+	
+	if( ! $result && $frm_formid == 3 && ( ! $frm_name || ! $frm_email || ! $frm_text))
+		$result= '{"result":"error","text":"Заполните обязательные поля"}';
+	
 	if($result){
 	}elseif( ! $frm_email && ! $frm_phone) $result= '{"result":"error","text":"Укажите контактные данные"}';
 	
 	if( ! $result)
 	{
-		$subject= ($frm_formid==2 ? 'Заказ звонка' : 'Сообщение') .' с сайта www.'.getenv('HTTP_HOST');
+		$subject= ($frm_formid==2 ? 'Заказ звонка' : 'Сообщение') .' с сайта '.MODX_SITE_URL;
 
 		$message= '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>'.$subject.'</title></head><body><h2>'.$subject.'</h2>';
 
@@ -100,6 +141,7 @@ if($_GET['act']=='formochki_send')
 		
 		
 		//------------------------------------------------------------------------------
+		include_once( MODX_MANAGER_PATH .'includes/controls/class.phpmailer.php' );
 		if(true)
 		{
 			$phpmailer= new PHPMailer();
@@ -137,9 +179,10 @@ if($_GET['act']=='formochki_send')
 		{
 			$result= '{"result":"ok","text":"Сообщение отправлено!"}';
 		}else{
-			$result= '{"result":"error","text":"Ошибка сервера! Повторите попытку позже."}';
+			$result= '{"result":"error","text":"Ошибка! Повторите попытку позже."}';
 		}
 	}
 	print $result;
 	if(isset($_GET['ajax'])){ header('Content-Type:text/html; charset=UTF-8'); exit(); }
 }
+?>

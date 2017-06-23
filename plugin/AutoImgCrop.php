@@ -44,7 +44,8 @@ if(true)
 		
 		pq($img)->attr('src', $crop);
 		
-		pq($img)->wrap('<a data-fancybox="content" href="'.$src.'" style="cursor:zoom-in;border:none;"></a>');
+		if( ! pq($img)->parent()->is('a'))
+			pq($img)->wrap('<a data-fancybox="content" href="'.$src.'" style="cursor:zoom-in;border:none;"></a>');
 		
 		$crop= true;
 	}

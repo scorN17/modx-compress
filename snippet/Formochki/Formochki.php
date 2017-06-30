@@ -40,6 +40,13 @@ $smtpport= 465;
 //SNIPPET Formochki
 //----------------------------------------------------------------------------------
 
+
+$subjects= array(
+	2 => 'Заказ звонка',
+	3 => 'Бронирование'
+);
+
+
 /**
  *
  *
@@ -111,7 +118,9 @@ if($_GET['act']=='formochki_send')
 	
 	if( ! $result)
 	{
-		$subject= ($frm_formid==2 ? 'Заказ звонка' : 'Сообщение') .' с сайта '.MODX_SITE_URL;
+		$subject= $subjects[$frm_formid];
+		if( ! $subject) $subject= 'Сообщение';
+		$subject .= ' с сайта '.MODX_SITE_URL;
 
 		$message= '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>'.$subject.'</title></head><body><h2>'.$subject.'</h2>';
 

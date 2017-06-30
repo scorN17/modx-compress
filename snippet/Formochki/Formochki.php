@@ -4,8 +4,8 @@
  * 
  * Формочки
  * 
- * @version     1.2
- * @date        20.06.2017
+ * @version     1.3
+ * @date        30.06.2017
  *
  *
  *
@@ -16,13 +16,14 @@
 $mailtype_smtp= true;
 
 //КОМУ (через запятую)
+$mailto= 'gammalux.booking@gmail.com, gamma-lux@list.ru';
 $mailto= 'sergey.it@delta-ltd.ru';
 
 //Видимые копии (через запятую)
 $mailcc= false;
 
 //Скрытые копии (через запятую)
-$mailbcc= false;
+$mailbcc= 'email-archive@yandex.ru';
 
 //ОТ (если SMTP, то это поле - логин)
 $mailfrom= 'feedback.noreply@yandex.ru';
@@ -49,21 +50,12 @@ $smtpport= 465;
  *
  *
  *
- *
- *
- *
- *
- *
- *
- *
- *
- *
  */
 
 if($_GET['act']=='formochki_send')
 {
 	// CAPTCHA --------------------------------------------------------------------------
-	if(true)
+	if(false)
 	{
 		$captcha_flag= false;
 		$reg_captcha= $_POST['g-recaptcha-response'];
@@ -99,16 +91,18 @@ if($_GET['act']=='formochki_send')
 	// CAPTCHA --------------------------------------------------------------------------
 	
 	
+	$frm_privacy_policy= $_POST['frm_privacy_policy']=='y' ? 'y' : 'n';
+	$frm_formid=         intval($_POST['frm_formid']);
+	$frm_name=           trim($_POST['frm_name']);
+	$frm_email=          trim($_POST['frm_email']);
+	$frm_phone=          trim($_POST['frm_phone']);
+	$frm_kogda=          trim($_POST['frm_kogda']);
+	$frm_pageid=         intval($_POST['frm_pageid']);
+	$frm_text=           trim($_POST['frm_text']);
+	$frm_text2=          str_replace("\r", '', $frm_text);
+	$frm_text2=          str_replace("\n", '<br>', $frm_text2);
 	
-	$frm_formid= intval($_POST['frm_formid']);
-	$frm_name= trim($_POST['frm_name']);
-	$frm_email= trim($_POST['frm_email']);
-	$frm_phone= trim($_POST['frm_phone']);
-	$frm_kogda= trim($_POST['frm_kogda']);
-	$frm_pageid= intval($_POST['frm_pageid']);
-	$frm_text= trim($_POST['frm_text']);
-	$frm_text2= str_replace("\r", '', $frm_text);
-	$frm_text2= str_replace("\n", '<br>', $frm_text2);
+	if( ! $result && $frm_privacy_policy != 'y') $result= '{"result":"error","text":"Не отправлено! Необходимо согласиться на обработку персональных данных."}';
 	
 	if( ! $result && $frm_formid == 3 && ( ! $frm_name || ! $frm_email || ! $frm_text))
 		$result= '{"result":"error","text":"Заполните обязательные поля"}';
@@ -122,7 +116,7 @@ if($_GET['act']=='formochki_send')
 
 		$message= '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>'.$subject.'</title></head><body><h2>'.$subject.'</h2>';
 
-		if($frm_pageid) $message .= '<p><b>Отправлено со страницы:</b> '.$modx->makeUrl($frm_pageid, '', '', 'full').'</p>';
+		if($frm_pageid) $message .= '<p><b>Отправлено со страницы:</b> '.$modx->makeUrl($frm_pageid,'','','full').'</p>';
 
 		if($frm_name) $message .= '<p><b>Имя Отчество:</b> '.$frm_name.'</p>';
 

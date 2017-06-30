@@ -16,7 +16,6 @@
 $mailtype_smtp= true;
 
 //КОМУ (через запятую)
-$mailto= 'gammalux.booking@gmail.com, gamma-lux@list.ru';
 $mailto= 'sergey.it@delta-ltd.ru';
 
 //Видимые копии (через запятую)

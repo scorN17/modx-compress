@@ -21,7 +21,9 @@ $cats= json_decode($cats, true);
 $list= $cats;
 if(is_array($cats) && count($cats))
 {
-	foreach($cats AS $row) if(isset($cats[$row['parent'] ])) unset($list[$row['parent'] ]);
+	// Не удалять - включите если
+	// нужно чтобы кэшировались только позиции конечных категорий
+	//foreach($cats AS $row) if(isset($cats[$row['parent'] ])) unset($list[$row['parent'] ]);
 }
 
 if(is_array($list) && count($list))
@@ -42,10 +44,9 @@ if(is_array($list) && count($list))
 	}	
 }
 
-//$modx->logEvent(123, 1, print_r($items,1), '________3____'.$row['folderid'].'_____');
 
 $rr= $modx->db->query("SELECT * FROM ".$modx->getFullTableName('_catfilter_value_cache')."
-	WHERE ".time()."-dt>".(60*60)." AND e='y' GROUP BY folderid LIMIT 100");
+	WHERE ".time()."-dt>".(60*2)." AND e='y' GROUP BY folderid LIMIT 100");
 if($rr && $modx->db->getRecordCount($rr))
 {
 	$bar= false;
@@ -73,21 +74,24 @@ if($rr && $modx->db->getRecordCount($rr))
 					while($row2= $modx->db->getRow($rr2))
 					{
 						$row2['value']= $modx->db->escape(trim($row2['value']));
+						$row2['dop']= $modx->db->escape(trim($row2['dop']));
 						if( ! $row2['value']) continue;
-						if( $tmparray[ $row[ 'folderid' ] ][ $row2[ 'cf_id' ] ][ $row2[ 'value' ] ] ) continue;
-						$tmparray[ $row[ 'folderid' ] ][ $row2[ 'cf_id' ] ][ $row2[ 'value' ] ]= true;
+						if( $tmparray[ $row[ 'folderid' ] ][ $row2[ 'cf_id' ] ][ $row2[ 'value' ].'-'.$row2['dop'] ] ) continue;
+						$tmparray[ $row[ 'folderid' ] ][ $row2[ 'cf_id' ] ][ $row2[ 'value' ].'-'.$row2['dop'] ]= true;
 						
 						
 						
 						$rr3= $modx->db->query("SELECT * FROM ".$modx->getFullTableName('_catfilter_value_cache')."
-							WHERE folderid={$row[folderid]} AND (cf_id=0 OR (cf_id={$row2[cf_id]} AND `value`='{$row2[value]}')) ORDER BY cf_id LIMIT 1");
+							WHERE folderid={$row[folderid]} AND (cf_id=0 OR (cf_id={$row2[cf_id]} AND `value`='{$row2[value]}' AND dop='{$row2[dop]}'))
+								ORDER BY cf_id LIMIT 1");
 						if($rr3 && $modx->db->getRecordCount($rr3))
 						{
 							$foo= $modx->db->getRow($rr3);
 							
 							$modx->db->query("UPDATE ".$modx->getFullTableName('_catfilter_value_cache')."
-								SET ".($foo['cf_id']=='0' ? "cf_id={$row2[cf_id]}, `value`='{$row2[value]}'," : "" )." itemid={$row2[itemid]}, cfv_id={$row2[id]}, dt=".time().", e='y'
-									WHERE id={$foo['id']} LIMIT 1");
+								SET ".($foo['cf_id']=='0' ? "cf_id={$row2[cf_id]}, `value`='{$row2[value]}', dop='{$row2[dop]}'," : "" )."
+									itemid={$row2[itemid]}, cfv_id={$row2[id]}, dt=".time().", e='y'
+										WHERE id={$foo['id']} LIMIT 1");
 						}elseif($rr3){
 							$modx->db->query("INSERT INTO ".$modx->getFullTableName('_catfilter_value_cache')." SET
 								itemid={$row2[itemid]}
@@ -96,6 +100,7 @@ if($rr && $modx->db->getRecordCount($rr))
 								, cfv_id={$row2[id]}
 								, cf_id={$row2[cf_id]}
 								, `value`='{$row2[value]}'
+								, dop='{$row2[dop]}'
 								");
 						}
 					}

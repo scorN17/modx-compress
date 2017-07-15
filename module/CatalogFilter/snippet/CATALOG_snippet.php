@@ -1,4 +1,21 @@
 <?php
+/**
+ * CATALOG
+ *
+ * Каталог
+ *
+ * @version 7.0
+ * @date    15.07.2017
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+	
 $catalogroot= 15; // Корень каталога
 
 $itemid_prefix= 'i_';
@@ -28,15 +45,8 @@ if( ! $item['isfolder'])
 	$pp_items .= '<br></div><!--.catalog_page-->';
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
 // ---------------------------------------------------------------------------------------------------------------------
+
 }else{
 	$idType= 'parents';
 	$ids= $id;
@@ -76,6 +86,14 @@ if( ! $item['isfolder'])
 				break;
 			}else{
 				$param_id= $foo;
+				
+				$rr= $modx->db->query("SELECT type FROM ".$modx->getFullTableName('_catfilter')." WHERE id={$param_id} LIMIT 1");
+				if($rr && $modx->db->getRecordCount($rr))
+				{
+					$rr= $modx->db->getRow($rr);
+					if($rr['type'] == 'price' || $rr['type'] == 'interval') continue;
+				}
+				
 				$foo= 0;
 				if(is_array($row) && count($row))
 				{
@@ -104,21 +122,60 @@ if( ! $item['isfolder'])
 		if($ids) $idType= 'documents';
 	}
 	
+	$pp_pages_sort = $modx->makeUrl($id);
+	$pp_pages_sort .= ($_xp || $page>=2 ? 'x/' : '');
+	$pp_pages_sort .= ($_xp ? $_xp.'/' : '');
+	$pp_pages_sort .= ($page>=2 ? 'page_'.$page.'/' : '');	
+	
+	
+	
+	
+	
+	$sort= array(
+		'pagetitle' => ['pagetitle',  'BINARY'],
+		'article'   => ['article',    'BINARY'],
+		'priceDown' => ['price DESC', 'DECIMAL'],
+		'priceUp'   => ['price ASC',  'DECIMAL'],
+	);
+	if(isset($_GET['sort']))
+	{
+		$orderby= isset($sort[$_GET['sort'] ]) ? $_GET['sort'] : 'pagetitle';
+		$_SESSION['catalog_sort']= $orderby;
+	}
+	if( ! $_SESSION['catalog_sort']) $_SESSION['catalog_sort']= 'pagetitle';
+	$orderby= $_SESSION['catalog_sort'];
+	
+	$pp_sorts = '<div class="orderby">		
+					<p class="sort font2">Сортировка				
+						<span class="pgn_i"><a href="'.$pp_pages_sort.'?sort=article" class="'.($orderby=='article' ? 'pgn_a' : '').'">Артикул</a></span>
+						<span class="pgn_i"><a href="'.$pp_pages_sort.'?sort=pagetitle" class="'.($orderby=='pagetitle' ? 'pgn_a' : '').'">Наименование</a></span>
+						<span class="pgn_i"><a href="'.$pp_pages_sort.'?sort='.($orderby=='priceUp' ? 'priceDown' : 'priceUp').'" class="'.($orderby=='priceDown' || $orderby=='priceUp' ? 'pgn_a' : '').'">Цена '.($orderby=='priceUp' ? '↑' : '↓').'</a></span>
+						</p><br></div>';
+	
+	$orderby= $sort[$orderby];
+	
+	
+	
+	
+	
+	
+		
 	$pp_items= $modx->runSnippet('DocLister',array('idType'=>$idType, $idType=>$ids, 'selectFields'=>$selectFields, 'tvList'=>$tvList,
-												   'id'=>'items',
-												   'showParent'=>0,
-												   'tpl'=>'catalog_itemTpl',
-												   'prepare'=>'catalogItemPrepare',
-												   'depth'=>5,
-												   'sortType'=>'other',
-												   'orderBy'=>'article',
-												   'tvSortType'=>'DECIMAL',
-												   'offset'=>($page-1)*$items_in_page,
-												   'display'=>$items_in_page,
-												   'paginate'=>'pages',
+												   'id'         => 'items',
+												   'showParent' => 0,
+												   'tpl'        => 'catalog_itemTpl',
+												   'prepare'    => 'catalogItemPrepare',
+												   'depth'      => 5,
+												   'sortType'   => 'other',
+												   'orderBy'    => $orderby[0],
+												   'tvSortType' => $orderby[1],
+												   'offset'     => ($page-1)*$items_in_page,
+												   'display'    => $items_in_page,
+												   'paginate'   => 'pages',
 												  ));
 	
 	$total_pages= $modx->getPlaceholder('items.totalPages');
+	
 	if($total_pages>=2)
 	{
 		$pp_pages= '<div class="pagination"><div class="pgn_i pgn_tit font2">Страницы</div>' ."\n";
@@ -149,23 +206,25 @@ if( ! $item['isfolder'])
 				}
 				continue;
 			}
-				
+						
 			$pp_pages .= '<div class="pgn_i pgn_p '.($ii==$page?'pgn_a':'').' font2"><a href="'.$modx->makeUrl($id);
 			$pp_pages .= ($_xp || $ii>=2 ? 'x/' : '');
 			$pp_pages .= ($_xp ? $_xp.'/' : '');
-			$pp_pages .= ($ii>=2 ? 'page_'.$ii.'/' : '');
+			$pp_pages .= ($ii>=2 ? 'page_'.$ii.'/' : '');	
 			$pp_pages .= '">'. $ii .'</a></div>' ."\n";
 		}
 		
 		//$next= ($page+1 >= $total_pages ? false : $page+1);
 		//if($next) $pp_pages .= '<div class="pgn_i pgn_next font2"><a href="'.$modx->makeUrl($id) .'x/' .($_xp?$_xp.'/':'') .$paginate_prefix.$next.'/"> > </a></div>';
 		
-		$pp_pages .= '<br></div><br>';
+		$pp_pages .= '<br></div>';
 	}
 }
 
 $pp .= '<div class="catalog">';
+$pp .= $pp_sorts;
 $pp .= $pp_pages;
+$pp .= '<br>';
 $pp .= $pp_items;
 $pp .= $pp_pages;
 $pp .= '<br></div><!--.catalog-->';

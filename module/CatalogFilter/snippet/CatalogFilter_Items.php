@@ -1,23 +1,41 @@
 <?php
-//-----------------------------------------------------------------------------------
+/**
+ * CatalogFilter_Items
+ *
+ * Список отфильтрованных ресурсов
+ *
+ * @version 7.0
+ * @date    15.07.2017
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 
+$tv_price= 7;
+	
+	
+	
 if( ! $_x) return array('',0);
 
 
-$props= $modx->runSnippet('CatalogFilterProps', array('id'=>$id));
+$props= $modx->runSnippet('CatalogFilter_Props', array('id'=>$id));
 
-$znachs= array();
+
 if(is_array($props) && count($props))
 {
 	foreach($props AS $row)
 	{
 		if($row['type'] == 'price' || $row['type'] == 'interval')
 		{
-			$znachs[$row['cf_id'] ]= true;
+			$interval[$row['cfid'] ]= $row['type'];
 		}
 	}
 }
-
 
 
 
@@ -30,46 +48,59 @@ foreach($pr AS $val)
 	$prvals= explode('-', $val);
 	$prid= intval(array_shift($prvals));
 	
-	if(false && $znachs[$prid])
+	if(is_array($prvals) && count($prvals))
 	{
-		/*if($prid == $price_filter_id )
+		if($interval[$prid] == 'price')
 		{
-			$price_vals[0]= intval( $prvals[0] );
-			$price_vals[1]= intval( $prvals[1] );
+			$price_ot= intval($prvals[0]);
+			$price_do= intval($prvals[1]);
+
+		}elseif($interval[$prid] == 'interval'){
+			$interval_ot= intval($prvals[0]);
+			$interval_do= intval($prvals[1]);
+			if($interval_ot || $interval_do)
+			{
+				if($qq) $qq .= " OR ";
+				
+				$qq .= "( cf_id={$prid} AND ( ";
+				
+				if($interval_ot) $qq .= "'{$interval_ot}' <= IF(ROUND(dop)>ROUND(`value`), ROUND(dop), ROUND(`value`))";
+				
+				if($interval_ot && $interval_do) $qq .= " AND ";
+				
+				if($interval_do) $qq .= "ROUND(`value`) <= '{$interval_do}'";
+				
+				$qq .= " ) )";
+			}
 
 		}else{
-			$prvals[0]= intval( $prvals[0] );
-			$prvals[1]= intval( $prvals[1] );
-			if( $prvals[0] || $prvals[1] )
-				$qq .= ( $qq ? " OR " : "" ) ."( idfilter=".intval($prid)." AND ( ROUND(`value`)>='".( $prvals[0] )."' ".( $prvals[1] ? "AND ROUND(`value`)<='".( $prvals[1] )."'" : "" )." ) )";
-		}*/
-
-	}else{
-		$qqq= "";
-		foreach($prvals AS $prval) $qqq .= ($qqq ? " OR " : "") ."id=".$prval;
-		$qq .= ($qq ? " OR " : "") ."(cf_id=".intval($prid)." AND ( {$qqq} ) )";
+			$qqq= "";
+			foreach($prvals AS $prval) $qqq .= ($qqq ? " OR " : "") ."id=".$prval;
+			$qq .= ($qq ? " OR " : "") ."(cf_id={$prid} AND ( {$qqq} ) )";
+		}
 	}
 }
 
 
 
-
-$rr= $modx->db->query("SELECT * FROM ".$modx->getFullTableName('_catfilter_value')." WHERE {$qq}");
-if($rr && $modx->db->getRecordCount($rr))
+if($qq)
 {
-	while( $row= $modx->db->getRow($rr))
+	$rr= $modx->db->query("SELECT * FROM ".$modx->getFullTableName('_catfilter_value')." WHERE {$qq}");
+	if($rr && $modx->db->getRecordCount($rr))
 	{
-		$vals[$row[ 'cf_id'] ] .= ($vals[$row[ 'cf_id' ] ] ? " OR " : "") ."`value`='".$row['value']."'";
+		while($row= $modx->db->getRow($rr))
+		{
+			$vals[$row['cf_id'] ] .= ($vals[$row['cf_id'] ] ? " OR " : "") ."`value`='".$row['value']."'";
+		}
 	}
 }
-
 
 
 
 
 
 $ids= false;
-if($vals)
+if(is_array($vals) && count($vals))
 {
 	foreach($vals AS $param => $qqqq)
 	{
@@ -108,34 +139,26 @@ $ids= $tmparr;
 
 
 
-
-
-if(false &&  $price_vals && ( $price_vals[0] || $price_vals[1] ) )
+if($price_ot || $price_do)
 {
-	if( ! $ids )
+	$price_ids= array();
+	
+	$qq= "SELECT contentid FROM ".$modx->getFullTableName('site_tmplvar_contentvalues')." WHERE tmplvarid={$tv_price} AND ";
+	if($price_ot) $qq.= "ROUND(`value`)>='{$price_ot}'";
+	if($price_ot && $price_do) $qq .= " AND ";
+	if($price_do) $qq.= "ROUND(`value`)<='{$price_do}'";
+	
+	$rr= $modx->db->query($qq);
+	if($rr && $modx->db->getRecordCount($rr))
 	{
-		$docs= $modx->runSnippet( 'GetDoc6', array( 'ids'=>$id, 'type'=>'childs', 'depth'=>'0', 'isf'=>'0' ) );
-		if( $docs )
+		while($row= $modx->db->getRow($rr))
 		{
-			foreach( $docs AS $doc )
-			{
-				$ids[]= $doc['id'];
-			}
+			$price_ids[]= $row['contentid'];
 		}
 	}
 
-	$ids_prices= array();
-	$rr= mysql_query( "SELECT contentid FROM ".$modx->getFullTableName('site_tmplvar_contentvalues')."
-						WHERE tmplvarid={$tv_price} AND ROUND(`value`)>='".$price_vals[0]."' ".( $price_vals[1] ? "AND ROUND(`value`)<='".$price_vals[1]."'" : "" )."" );
-	if( $rr && mysql_num_rows( $rr ) > 0 )
-	{
-		while( $row= mysql_fetch_assoc( $rr ) )
-		{
-			$ids_prices[]= $row['contentid'];
-		}
-	}
-
-	$ids= array_intersect( $ids, $ids_prices );
+	if(is_array($ids) && count($ids)) $ids= array_intersect($ids, $price_ids);
+	else $ids= $price_ids;
 }
 
 
@@ -143,7 +166,6 @@ if(false &&  $price_vals && ( $price_vals[0] || $price_vals[1] ) )
 
 
 
-$result= '';
 if(is_array($ids) && count($ids))
 {
 	foreach($ids AS $val)

@@ -1,7 +1,15 @@
 <?php
-// v7.2
-// 15.09.2016
-// ImgCrop
+/**
+ * ImgCrop8
+ *
+ * Кроп картинок
+ *
+ * @version   8.0
+ * @date      16.06.2017
+ *
+ *
+ */
+	
 /*
 	$img= assets/images/img.jpg
 	$dopimg= assets/images/dopimg.jpg
@@ -25,8 +33,8 @@
 	$r= 0/1
 */
 //--------------------------------------------------------------------------------------
-$ipathnotphoto= 'template/images/nophoto.png';
-$ipathwatermark= 'template/images/watermark.png';
+$ipathnotphoto= 'template/img/nophoto.png';
+$ipathwatermark= 'template/img/watermark.png';
 //--------------------------------------------------------------------------------------
 //
 //
@@ -52,7 +60,6 @@ $ellipse= ($ellipse == 'max' ? 'max' : intval($ellipse));
 $quality= intval($quality);
 if($quality === 0) $quality= ($_GET['ww']<=800 ? 60 : 80);
 else $quality= ($quality<0 || $quality>100 ? 80 : $quality);
-
 $base= ltrim(MODX_BASE_URL, DIRECTORY_SEPARATOR);
 $img= trim(urldecode($img));
 $slashflag= (strpos($img, DIRECTORY_SEPARATOR)===0 ? true : false);
@@ -73,7 +80,6 @@ if($toimg)
 	$toimg= ltrim($toimg, DIRECTORY_SEPARATOR);
 	$toimg= ltrim($toimg, $base);
 }
-
 if( ! file_exists($root.$img) || ! is_file($root.$img))
 {
 	$img= $ipathnotphoto;
@@ -96,7 +102,6 @@ if( ! $toimg)
 if( ! file_exists($newimg_path) || filectime($root.$img) > filectime($newimg_path)) $refresh= true;
 if(filesize($root.$img) > 1024*1024*10) return $img;
 //--------------------------------------------------------------------------------------
-
 if( $refresh )
 {
 	$img1_info= getimagesize( $root . $img );
@@ -127,7 +132,6 @@ if( $refresh )
 		if( ( $img1_info[ 0 ] > $w && $w > 0 ) || ( $img1_info[ 1 ] > $h && $h > 0 ) )
 		{
 			$dstH= round( $dstW / $ot );
-
 			if( $dstH > $h && $h > 0 )
 			{
 				$dstH= $h;
@@ -171,12 +175,10 @@ if( $refresh )
 		$bgcolor= 'coord';
 	}
 	//--------------------------------------------------------------------------------------
-
 	if($img1_info[2] == 1) $img1= imagecreatefromgif($root.$img);
 	elseif($img1_info[2] == 2) $img1= imagecreatefromjpeg($root.$img);
 	elseif($img1_info[2] == 6) $img1= imagecreatefromwbmp($root.$img);
 	elseif($img1_info[2] == 3){ $img1= imagecreatefrompng($root.$img); $png= true; }
-
 	if( $bgcolor == 'coord' )
 	{
 		$col= imagecolorat( $img1, $coord_arr[ 0 ], $coord_arr[ 1 ] );
@@ -186,9 +188,7 @@ if( $refresh )
 		$rgba_arr[ 2 ]= $bgcolor[ 'blue' ];
 		$rgba_arr[ 3 ]= $bgcolor[ 'alpha' ];
 	}
-
 	$img2= ImageCreateTrueColor( $crW, $crH );
-
 	if( $png )
 	{
 		imagealphablending( $img2, true );
@@ -197,7 +197,6 @@ if( $refresh )
 	}else{
 		$col= imagecolorallocate( $img2, $rgba_arr[ 0 ], $rgba_arr[ 1 ], $rgba_arr[ 2 ] );
 	}
-
 	if( $bgcolor == 'fill' )
 	{
 		imagecopyresampled( $img2, $img1, 0, 0, 0, 0, $crW, $crH, $img1_info[0], $img1_info[1] );
@@ -216,9 +215,7 @@ if( $refresh )
 	}else{
 		imagefill( $img2, 0,0, $col );
 	}
-
 	imagecopyresampled( $img2, $img1, $dstX, $dstY, $srcX, $srcY, $dstW, $dstH, $srcW, $srcH );
-
 	if( $wm )
 	{
 		$wm_info= getimagesize( $root . $ipathwatermark );
@@ -241,7 +238,6 @@ if( $refresh )
 		imagecopyresampled( $img2, $img3, $wmX, $wmY, 0, 0, $wmW, $wmH, $wm_info[ 0 ], $wm_info[ 1 ] );
 		imagedestroy( $img3 );
 	}
-
 	$filter= explode( '|', $filter );
 	if( ! empty( $filter ) )
 	{
@@ -254,7 +250,6 @@ if( $refresh )
 			else imagefilter( $img2, $tmp[ 0 ] );
 		}
 	}
-
 	if( $ellipse )
 	{
 		$degstep= ( $degstep ? intval( $degstep ) : 5 );
@@ -294,7 +289,6 @@ if( $refresh )
 		//$autrum= imagecolorallocate( $img2, 216, 181, 85 );
 		//imageellipse( $img2, $cntr, $cntr, $ellipse_r*2, $ellipse_r*2, $autrum );
 	}
-
 	if($dopimg)
 	{
 		if($dopimg_xy) $dopimg_xy= explode(':', $dopimg_xy);
@@ -308,7 +302,6 @@ if( $refresh )
 		imagedestroy($img3);
 	}
 	//--------------------------------------------------------------------------------------
-
 	if($png) imagepng($img2, $newimg_path);
 	elseif($img1_info[2] == 1) imagegif($img2, $newimg_path, $quality);
 	elseif($img1_info[2] == 2) imagejpeg($img2, $newimg_path, $quality);
@@ -318,6 +311,4 @@ if( $refresh )
 	imagedestroy($img1);
 	imagedestroy($img2);
 } //if($refresh)
-
 return $newimg_path_return;
-?>

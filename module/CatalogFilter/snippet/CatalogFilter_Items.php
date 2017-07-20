@@ -4,8 +4,8 @@
  *
  * Список отфильтрованных ресурсов
  *
- * @version 7.0
- * @date    15.07.2017
+ * @version 7.1
+ * @date    20.07.2017
  *
  *
  *
@@ -141,6 +141,19 @@ $ids= $tmparr;
 
 if($price_ot || $price_do)
 {
+	if( ! is_array($ids) || ! count($ids))
+	{
+		$foo= $modx->runSnippet('DocLister',array(
+			'idType'           => 'parents',
+			'parents'          => $id,
+			'selectFields'     => 'c.id',
+			'depth'            => 10,
+			'tpl'              => '@CODE:[+id+],'
+		));
+		$foo= trim($foo, ',');
+		$ids= explode(',', $foo);
+	}
+	
 	$price_ids= array();
 	
 	$qq= "SELECT contentid FROM ".$modx->getFullTableName('site_tmplvar_contentvalues')." WHERE tmplvarid={$tv_price} AND ";
@@ -150,11 +163,17 @@ if($price_ot || $price_do)
 	
 	$rr= $modx->db->query($qq);
 	if($rr && $modx->db->getRecordCount($rr))
-	{
 		while($row= $modx->db->getRow($rr))
-		{
 			$price_ids[]= $row['contentid'];
-		}
+	
+	if( ! $price_ot)
+	{
+		$rr= $modx->db->query("SELECT sc.id FROM ".$modx->getFullTableName('site_content')." AS sc
+			LEFT JOIN ".$modx->getFullTableName('site_tmplvar_contentvalues')." AS tv ON tv.contentid=sc.id AND tv.tmplvarid={$tv_price}
+				WHERE tv.`value` IS NULL");	
+		if($rr && $modx->db->getRecordCount($rr))
+			while($row= $modx->db->getRow($rr))
+				$price_ids[]= $row['id'];
 	}
 
 	if(is_array($ids) && count($ids)) $ids= array_intersect($ids, $price_ids);

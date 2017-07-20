@@ -4,8 +4,8 @@
  *
  * Каталог
  *
- * @version 7.0
- * @date    15.07.2017
+ * @version 7.1
+ * @date    20.07.2017
  *
  *
  *
@@ -146,10 +146,10 @@ if( ! $item['isfolder'])
 	$orderby= $_SESSION['catalog_sort'];
 	
 	$pp_sorts = '<div class="orderby">		
-					<p class="sort font2">Сортировка				
+					<p class="sort font2">Сортировка
 						<span class="pgn_i"><a href="'.$pp_pages_sort.'?sort=article" class="'.($orderby=='article' ? 'pgn_a' : '').'">Артикул</a></span>
 						<span class="pgn_i"><a href="'.$pp_pages_sort.'?sort=pagetitle" class="'.($orderby=='pagetitle' ? 'pgn_a' : '').'">Наименование</a></span>
-						<span class="pgn_i"><a href="'.$pp_pages_sort.'?sort='.($orderby=='priceUp' ? 'priceDown' : 'priceUp').'" class="'.($orderby=='priceDown' || $orderby=='priceUp' ? 'pgn_a' : '').'">Цена '.($orderby=='priceUp' ? '↑' : '↓').'</a></span>
+						<span class="pgn_i"><a href="'.$pp_pages_sort.'?sort='.($orderby=='priceUp' ? 'priceDown' : 'priceUp').'" class="'.($orderby=='priceDown' || $orderby=='priceUp' ? 'pgn_a' : '').'">Цена '.($orderby=='priceDown' ? '↓' : '↑').'</a></span>
 						</p><br></div>';
 	
 	$orderby= $sort[$orderby];

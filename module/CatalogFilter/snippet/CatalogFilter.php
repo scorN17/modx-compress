@@ -4,8 +4,8 @@
  *
  * Левый блок фильтра
  *
- * @version 7.0
- * @date    15.07.2017
+ * @version 7.1
+ * @date    20.07.2017
  *
  *
  *
@@ -135,7 +135,7 @@ if(is_array($props) && count($props))
 	{
 		if($row['type'] == 'price' || $row['type'] == 'interval')
 		{
-			if( ! $propssel[$row['cfid'] ][0]) $propssel[$row['cfid'] ][0]= $min[$row['cfid'] ];
+			if( ! $propssel[$row['cfid'] ][0]) $propssel[$row['cfid'] ][0]= 0;
 			if( ! $propssel[$row['cfid'] ][1]) $propssel[$row['cfid'] ][1]= $max[$row['cfid'] ];
 			
 			if( ! $max[$row['cfid'] ] || $max[$row['cfid'] ] <= $min[$row['cfid'] ]) continue;
@@ -159,7 +159,7 @@ if(is_array($props) && count($props))
 						$(document).ready(function(){
 							$(".cf_interval_range_'.$row['cfid'].'").slider({
 								range: true,
-								min: '.$min[$row['cfid'] ].',
+								min: 0,
 								max: '.$max[$row['cfid'] ].',
 								values: ['.$propssel[$row['cfid'] ][0].', '.$propssel[$row['cfid'] ][1].'],
 								//step: 100,

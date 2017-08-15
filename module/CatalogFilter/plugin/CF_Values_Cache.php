@@ -3,9 +3,10 @@
  *
  * Кэширование значений фильтра каталога
  *
- * @version   10.0
- * @date      17.05.2017
- * @events    OnBeforeCacheUpdate
+ * @version   10.1
+ * @date      15.08.2017
+ *
+ * @events    OnWebPageComplete
  *
  * @dependence
  * SNIPPET DocLister
@@ -31,10 +32,10 @@ if(is_array($list) && count($list))
 	foreach($list AS $row)
 	{
 		$rr= $modx->db->query("SELECT * FROM ".$modx->getFullTableName('_catfilter_value_cache')." WHERE folderid={$row[id]} AND e='y' LIMIT 1");
-		if($rr && $modx->db->getRecordCount($rr)==0)
+		if($rr && $modx->db->getRecordCount($rr) == 0)
 		{
 			$rr= $modx->db->query("SELECT * FROM ".$modx->getFullTableName('_catfilter_value_cache')." WHERE folderid={$row[id]} LIMIT 1");
-			if($rr && $modx->db->getRecordCount($rr)==0)
+			if($rr && $modx->db->getRecordCount($rr) == 0)
 			{
 				$modx->db->query("INSERT INTO ".$modx->getFullTableName('_catfilter_value_cache')." SET folderid={$row[id]}");
 			}elseif($rr){
@@ -46,7 +47,7 @@ if(is_array($list) && count($list))
 
 
 $rr= $modx->db->query("SELECT * FROM ".$modx->getFullTableName('_catfilter_value_cache')."
-	WHERE ".time()."-dt>".(60*2)." AND e='y' GROUP BY folderid LIMIT 100");
+	WHERE ".time()."-dt>".(60*60*6)." AND e='y' GROUP BY folderid LIMIT 100");
 if($rr && $modx->db->getRecordCount($rr))
 {
 	$bar= false;

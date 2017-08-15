@@ -12,7 +12,7 @@
 
 if( ! $_SESSION['CatalogFilterValuesCleared'])
 {
-	$_SESSION['CatalogFilterValuesCleared']= false;
+	$_SESSION['CatalogFilterValuesCleared']= true;
 	
 	print '<br /><br />';
 	$rr= $modx->db->query("SELECT itemid FROM ".$modx->getFullTableName('_catfilter_value')." GROUP BY itemid");

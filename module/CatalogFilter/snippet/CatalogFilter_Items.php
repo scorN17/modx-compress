@@ -4,8 +4,8 @@
  *
  * Список отфильтрованных ресурсов
  *
- * @version 7.1
- * @date    20.07.2017
+ * @version 7.2
+ * @date    15.08.2017
  *
  *
  *
@@ -136,6 +136,9 @@ if($ids)
 }
 $ids= $tmparr;
 
+
+
+if( ! $first && ( ! is_array($ids) || ! count($ids))) return '';
 
 
 

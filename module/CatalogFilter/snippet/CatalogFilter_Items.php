@@ -119,10 +119,10 @@ if(is_array($vals) && count($vals))
 
 
 
+$first= true;
 $tmparr= false;
 if($ids)
 {
-	$first= true;
 	foreach($ids AS $row)
 	{
 		if($first)

@@ -3,8 +3,8 @@
  *
  * Авто кроп картинок
  *
- * @version     1.0
- * @date        16.06.2017
+ * @version     1.1
+ * @date        20.12.2017
  * @internal    @events OnWebPagePrerender
  *
  * Автоматически кропит картинки в контенте по атрибутам width="" и height=""
@@ -27,9 +27,9 @@ $html= $modx->documentOutput;
 
 if(true)
 {
-	include_once('assets/lib/phpQuery/phpQuery.php');
+	include_once(MODX_BASE_PATH.'assets/lib/phpQuery/phpQuery.php');
 	$pq= phpQuery::newDocument($html);
-	$imgs= pq($pq)->find('.content img');
+	$imgs= pq($pq)->find('.contenttext img');
 	foreach($imgs AS $img)
 	{
 		$width= trim(pq($img)->attr('width'));

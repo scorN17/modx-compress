@@ -3,9 +3,9 @@
  *
  * Редиректы
  *
- * @version   11.1
- * @date 28.12.2017
- * @internal    @events OnWebPageInit
+ * @version   11.2
+ * @date 04.01.2018
+ * @internal    @events OnWebPageInit,OnPageNotFound
  *
  *
  *
@@ -30,7 +30,7 @@ $redirect= array(
 
 $e= &$modx->Event;
 //if($modx->isFrontend()) $modx->logEvent(5, 1, '', microtime() .' -- '. $e->name);
-if($e->name != 'OnWebPageInit') return;
+if($e->name != 'OnWebPageInit' && $e->name != 'OnPageNotFound') return;
 
 $site= rtrim(MODX_SITE_URL,DIRECTORY_SEPARATOR);
 $base= rtrim(MODX_BASE_URL,DIRECTORY_SEPARATOR);

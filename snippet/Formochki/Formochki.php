@@ -36,6 +36,7 @@ $subjects= array(
 	3 => 'Бронирование'
 );
 
+$debug= false;
 
 /**
  *
@@ -140,7 +141,7 @@ if ($_GET['act']=='formochki_send') {
 		if (true) {
 			$modx->loadExtension('modxmailer');
 			
-			if (true) {
+			if ($debug) {
 				$modx->mail->SMTPDebug= 2;
 				$modx->mail->Debugoutput = 'html';
 			}

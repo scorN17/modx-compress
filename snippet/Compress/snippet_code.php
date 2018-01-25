@@ -4,14 +4,14 @@
  *
  * Компрессор CSS & JS
  *
- * @version 18.0
- * @date    15.06.2017
+ * @version 18.1
+ * @date    25.01.2018
  *
  *
  *
  *
  */
-$version= 'v18.0';
+$version= 'v18.1';
 
 /*
 	&compress=true/false
@@ -62,7 +62,13 @@ if(true)
 	{
 		$filetype= substr($files, strrpos($files,'.'));
 		$file_to= $tofile;
-		if( ! $file_to) $file_to= substr($files, 0, strrpos($files,'.')) .'.compress'.$filetype;
+		if( ! $file_to)
+		{
+			$slashpos= strrpos($files, '/');
+			$file_to= $slashpos === false ? '' : substr($files, 0, $slashpos+1);
+			$file_to .= 'compress.';
+			$file_to .= $slashpos === false ? $files : substr($files, $slashpos+1);
+		}
 		$tmp1= explode(';', $files);
 		if(is_array($tmp1) && count($tmp1))
 		{

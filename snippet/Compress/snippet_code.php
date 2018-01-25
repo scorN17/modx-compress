@@ -66,7 +66,7 @@ if(true)
 		{
 			$slashpos= strrpos($files, '/');
 			$file_to= $slashpos === false ? '' : substr($files, 0, $slashpos+1);
-			$file_to .= 'compress.';
+			$file_to .= '_compress.';
 			$file_to .= $slashpos === false ? $files : substr($files, $slashpos+1);
 		}
 		$tmp1= explode(';', $files);

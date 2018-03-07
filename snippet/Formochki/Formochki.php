@@ -4,8 +4,8 @@
  * 
  * Формочки
  * 
- * @version     2.2
- * @date        14.02.2018
+ * @version     2.3
+ * @date        07.03.2018
  *
  *
  *
@@ -16,7 +16,7 @@
 $mailto       = 'sergey.it@delta-ltd.ru';
 
 //ОТ
-$mailfrom     = 'feedback.noreply@yandex.ru';
+$mailfrom     = 'noreply@web-trend.online'; //tqlwGHvd4_V_fMuEr17M
 $mailfromname = '';
 
 //ОТВЕТИТЬ КОМУ
@@ -33,11 +33,14 @@ $mailbcc      = false;
 
 
 $subjects= array(
-	2 => 'Заказ звонка',
-	3 => 'Бронирование'
+	1 => 'Заказ КП',
+	2 => 'Бесплатная консультация',
+	3 => 'Доступ к портфолио',
 );
 
 $debug= false;
+
+$upload_folder= 'assets/files/formochki/';
 
 /**
  *
@@ -70,7 +73,7 @@ $modx->db->query("CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName('formochk
   `mail` longtext NOT NULL,
   `dt` varchar(31) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf-8 AUTO_INCREMENT=1 ;");
+) ENGINE=MyISAM DEFAULT CHARSET=`utf8` AUTO_INCREMENT=1;");
 
 // CAPTCHA --------------------------------------------------------------------------
 if (false) {
@@ -122,11 +125,13 @@ $frm_text           = trim($_POST['frm_text']);
 $frm_text2          = str_replace("\r", '', $frm_text);
 $frm_text2          = str_replace("\n", '<br>', $frm_text2);
 
+$frm_file           = $_FILES['frm_file'];
+
 if ( ! $result && $frm_privacy_policy != 'y') {
-	//$result = '{"result":"error","text":"Не отправлено! Необходимо согласиться на обработку персональных данных."}';
+	$result = '{"result":"error","text":"Не отправлено! Нет согласия на обработку персональных данных."}';
 }
 
-if ( ! $result && $frm_formid == 3 && ( ! $frm_name || ! $frm_email || ! $frm_text)) {
+if ( ! $result && $frm_formid == 111 && ( ! $frm_phone || ! $frm_email)) {
 	$result = '{"result":"error","text":"Заполните обязательные поля"}';
 }
 
@@ -135,10 +140,31 @@ if ($result) {
 	$result = '{"result":"error","text":"Укажите контактные данные"}';
 }
 
+if ( ! $result && is_uploaded_file($frm_file['tmp_name'])) {
+	if ($frm_file['size'] > 1024*1024*10) {
+		$result = '{"result":"error","text":"Файл слишком большой"}';
+	} else {
+		$folder = md5('_'.$_SERVER['REMOTE_ADDR']);
+		$folder = $upload_folder.$folder.'/';
+		if ( ! file_exists(MODX_BASE_PATH.$folder)) {
+			mkdir(MODX_BASE_PATH.$folder, 0755, true);
+		}
+		$file = md5($frm_file['name'].time()).'.zip';
+		$zip = new ZipArchive();
+		$zip->open(MODX_BASE_PATH.$folder.$file, ZIPARCHIVE::CREATE);
+		$zip->addFile($frm_file['tmp_name'], $frm_file['name']);
+		$zip->close();
+		
+		$frm_file= MODX_SITE_URL.$folder.$file;
+	}
+} else {
+	$frm_file = null;	
+}
+
 if ( ! $result) {
 	$subject = $subjects[$frm_formid];
 	if ( ! $subject) $subject = 'Сообщение';
-	$subject .= ' с сайта '.MODX_SITE_URL;
+	$subject .= ', '.MODX_SITE_URL;
 
 	$message = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>'.$subject.'</title></head><body><h2>'.$subject.'</h2>';
 
@@ -155,6 +181,8 @@ if ( ! $result) {
 	$message .= '<p><b>Дата и время сообщения:</b> '.date('d.m.Y, H:i').'</p>';
 
 	if($frm_text2) $message .= '<p><b>Сообщение:</b><br />'.$frm_text2.'</p>';
+	
+	if ($frm_file) $message .= '<p><b>Загруженный файл:</b><br /><a target="_blank" href="'.$frm_file.'">'.$frm_file.'</a></p>';
 
 	$message .= '</body></html>';
 	

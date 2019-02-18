@@ -6,8 +6,8 @@
  *
  * 1C:Exchange
  *
- * @version 2.3
- * @date    15.06.2017
+ * @version 2.6
+ * @date    14.07.2017
  *
  *
  *
@@ -37,10 +37,10 @@ $time= $_SESSION['1c']['time'];
 $folder= '1c_exchange/xml/'.date('Y-m').'/';
 if( ! file_exists(MODX_BASE_PATH.$folder)) mkdir(MODX_BASE_PATH.$folder, 0777, true);
 
-$modx->db->query("INSERT INTO ".$modx->getFullTableName('_1c_log')." SET dth='".date('Y-m-d-H-i-s')."', log='catalog::000:: {$session_id}'"); // LOG
+$modx->db->query("INSERT INTO ".$modx->getFullTableName('_1c_log')." SET dth='".date('Y-m-d-H-i-s')."', log='catalog::000'"); // LOG
 
-$modx->db->query("UPDATE ".$modx->getFullTableName('_1c_')." SET cancel_dth='".date('Y-m-d-H-i-s')."', cancel_dt=".time()."
-	WHERE session<>'{$session_id}' AND status<>'complete'" );
+//$modx->db->query("UPDATE ".$modx->getFullTableName('_1c_')." SET cancel_dth='".date('Y-m-d-H-i-s')."', cancel_dt=".time()."
+//	WHERE session<>'{$session_id}' AND status<>'complete'");
 
 if($_GET['type'] == 'catalog')
 {
@@ -65,17 +65,18 @@ if($_GET['type'] == 'catalog')
 		
 		$modx->db->query("INSERT INTO ".$modx->getFullTableName('_1c_log')." SET dth='".date('Y-m-d-H-i-s')."', log='catalog::001:: {$filename}'"); // LOG
 		
-		$rassh= explode(".", $filename);
-		$rassh= $rassh[count($rassh)-1];
+		$rassh= substr($filename, strrpos($filename, '.'));
 		
-		if($rassh == 'xml') $filename= $time.'__'.$filename;
+		$filetype= strpos($filename, 'offers')!==false ? 'offers' : 'import';
+		
+		if($rassh == '.xml') $filename= $time.'__'.$filename;
 		
 		$file= '';
 		if($_SESSION['1c']['catalog_file'][$filename]['step'] != 2)
 		{
-			if($rassh == 'xml')
+			if($rassh == '.xml')
 			{
-				$file= MODX_BASE_PATH .$folder. $filename;
+				$file= $folder. $filename;
 				
 				$modx->db->query("INSERT INTO ".$modx->getFullTableName('_1c_log')." SET dth='".date('Y-m-d-H-i-s')."', log='catalog::002:: {$file}'"); // LOG
 				
@@ -84,24 +85,28 @@ if($_GET['type'] == 'catalog')
 					$modx->db->query("INSERT INTO ".$modx->getFullTableName('_1c_log')." SET dth='".date('Y-m-d-H-i-s')."', log='catalog::003:: {$file}'"); // LOG
 					
 					$_SESSION['1c']['catalog_file'][$filename]['step']= 2;
-					$_SESSION['1c']['catalog_file'][$filename]['filepath']= $file;
+					$_SESSION['1c']['catalog_file'][$filename]['filepath']= MODX_BASE_PATH. $file;
 					
 					$modx->db->query("INSERT INTO ".$modx->getFullTableName('_1c_') ." SET file='".date('Y-m')."/{$filename}',
-						session='{$session_id}', status='from_1c', dth='".date('Y-m-d-H-i-s')."', dt=".time());
+						type='{$filetype}', session='{$session_id}', status='from_1c', dth='".date('Y-m-d-H-i-s')."', dt=".time());
 				}else{
 					$file= '';
 				}
 				
 			}elseif(true){
-				$filename2= md5($filename).'.'.$rassh;
+				$filename2= md5($filename) .$rassh;
 				$fldr= 'x'.substr($filename2,0,2);
-				$file= MODX_BASE_PATH.'assets/images/1c/'.$fldr.'/';
-				if( ! file_exists($file)) mkdir($file,0777,true);
+				
+				$file= 'assets/';
+				$file .= $rassh=='.txt' ? 'files' : 'images';
+				$file .= '/1c/'.$fldr.'/';
+				
+				if( ! file_exists(MODX_BASE_PATH. $file)) mkdir(MODX_BASE_PATH. $file,0777,true);
 				$file .= $filename2;
-				if(file_exists($file)) unlink($file);
+				if(file_exists(MODX_BASE_PATH. $file)) unlink(MODX_BASE_PATH. $file);
 				$modx->db->query("INSERT INTO ".$modx->getFullTableName('_1c_log')." SET dth='".date('Y-m-d-H-i-s')."', log='catalog::001-2:: {$file}'"); // LOG
 				$_SESSION['1c']['catalog_file'][$filename]['step']= 2;
-				$_SESSION['1c']['catalog_file'][$filename]['filepath']= $file;
+				$_SESSION['1c']['catalog_file'][$filename]['filepath']= MODX_BASE_PATH. $file;
 			}
 			
 		}else{
@@ -175,7 +180,10 @@ $modx->db->query("CREATE TABLE IF NOT EXISTS ".$modx->getFullTableName('_1c_')."
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `session` varchar(127) NOT NULL,
   `file` varchar(127) NOT NULL,
-  `status` set('from_1c','new','to_db','complete') NOT NULL DEFAULT 'from_1c',
+  `type` set('import','offers') NOT NULL DEFAULT 'import',
+  `status` set('from_1c','new','to_db','complete','cancel') NOT NULL DEFAULT 'from_1c',
+  `step` tinyint(4) NOT NULL DEFAULT '1',
+  `point` int(11) NOT NULL DEFAULT '0',
   `dth` varchar(31) NOT NULL,
   `status_dth` varchar(31) NOT NULL,
   `cancel_dth` varchar(31) NOT NULL,

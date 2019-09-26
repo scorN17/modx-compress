@@ -2,27 +2,25 @@
 /**
  * GetIdOnLvl
  *
- * @version   6.0
- * @date      16.06.2017
+ * @version   7.0
+ * @date      26.09.2019
  *
- *
+ * $root, $id, $fields, $lvl, $prm
  *
  */
-	
-$doc= $modx->getDocument( $id, 'id,parent'.( $fields ? ',' : '' ).$fields );
-$list[]= $doc;
-while( $id != $koren && $doc[ 'parent' ] != $koren && $doc[ 'parent' ] != 0 )
-{
-	$doc= $modx->getDocument( $doc[ 'parent' ], 'id,parent'.( $fields ? ',' : '' ).$fields );
-	$list[]= $doc;
+$fields = 'id,parent'.($fields?',':'').$fields;
+$doc = $modx->getDocument($id,$fields);
+$list[] = $doc;
+while ($id != $root && $doc['parent'] != $root && $doc['parent'] > 0) {
+	$doc = $modx->getDocument($doc['parent'],$fields);
+	$list[] = $doc;
 }
-if( $doc[ 'parent' ] == 0 )
-{
-	$list[]= array( 'id'=>0 );
-}elseif( $doc[ 'parent' ] == $koren ){
-	$doc= $modx->getDocument( $doc[ 'parent' ], 'id,parent'.( $fields ? ',' : '' ).$fields );
-	$list[]= $doc;
+if ($doc['parent'] == 0) {
+	$list[] = array('id'=>0);
+} elseif ($doc['parent'] == $root) {
+	$doc = $modx->getDocument($doc['parent'],$fields);
+	$list[] = $doc;
 }
-$list[]= false;
-$list= array_reverse( $list );
-return ( $lvl ? $list[ $lvl ][ ( $prm ? $prm : 'id' ) ] : $list );
+$list[] = false;
+$list = array_reverse($list);
+return ($lvl ? ($prm ? $list[$lvl][$prm] : $list[$lvl]) : $list);
